@@ -6,11 +6,13 @@ TEST_UPC = '883929638482'
 
 def main():
     upc = UPCFinder(TEST_UPC)
-    upc.get_completed_listings()
+    upc.retrieve_completed_listings()
     print(upc.completed_listings)
     print()
-    upc.item_details_main_async_loop()
-    print(upc.item_details['254110279118'])
+    for item in upc.completed_listings:
+        print(item.item_id, item.title, item.url, item.cat_id, item.cat_name, item.sell_state, item.price, item.ship_cost, item.currency)
+    # upc.item_details_main_async_loop()
+    # print(upc.item_details['254110279118'])
 
 
 if __name__ == '__main__':
