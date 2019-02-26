@@ -3,15 +3,38 @@ from config import config
 import asyncio
 import aiohttp
 from aiohttp import client_exceptions
+from numpy import mean, median
 
 
-class UPCFinder:
+class Product:
 
     def __init__(self, upc):
         self.upc = upc
-        self.find_params = find_parameters(self.upc)
+        self.title = ''
+        self.cat_name = ''
+        self.cat_id = ''
+        self.description = ''
+        self.price = 0
+        self.shipping = 0
+        self.img = ''
         self.completed_listings = []
         self.completed_listing_details = {}
+
+    @property
+    def mean_price_completed_listings(self):
+        if self.completed_listings:
+            prices = [float(listing.price) for listing in self.completed_listings]
+            return mean(prices)
+        else:
+            return None
+
+    @property
+    def median_price_completed_listings(self):
+        if self.completed_listings:
+            prices = [float(listing.price) for listing in self.completed_listings]
+            return median(prices)
+        else:
+            return None
 
     def retrieve_completed_listings(self):
         """ Retrieve completed listings for given UPC """
@@ -58,7 +81,7 @@ class UPCFinder:
             print(e)
 
     def update_completed_listing_details(self):
-        """ Adds description and img urls to ItemListing instances """
+        """ Add description and img urls to ItemListing instances """
         for listing in self.completed_listings:
             data = self.completed_listing_details[listing.item_id]
 
