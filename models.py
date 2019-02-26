@@ -36,22 +36,6 @@ class UPCFinder:
                 item_id = data['Item']['ItemID']
                 self.item_details[item_id] = data
 
-        # for item_id in self.completed_listings.keys():
-        #     params = shop_parameters(item_id)
-        #     print(params)
-        #     req = build_request(base, params)
-        #     print(req)
-        # async with aiohttp.ClientSession(loop=loop) as session:
-
-        # loop = asyncio.get_event_loop()
-        # tasks = []
-        # for item_id in self.completed_listings.keys():
-        #     base = config['shopping_api_base']
-        #     params = shop_parameters(item_id)
-        #     task = loop.run_in_executor(None, fetch, base, params)
-        #     tasks += task
-        # await asyncio.gather(*tasks, return_exceptions=True)
-
     def item_details_main_async_loop(self):
         try:
             loop = asyncio.get_event_loop()
@@ -60,16 +44,16 @@ class UPCFinder:
             print(e)
 
 
-    # def get_item_details(self):
+class ItemListing:
 
-        # async with aiohttp.ClientSession(loop=loop) as session:
-        #     tasks = []
-        #     for item_id in self.completed_listings.keys():
-        #         base = config['shopping_api_base']
-        #         params = shop_parameters(item_id)
-        #         task = asyncio.ensure_future(fetch(base, params))
-        #     await asyncio.gather(*tasks, return_exceptions=True)
+    def __init__(self, item_id, title, description, url, img_url_arr, cat_id, cat_name, price, currency):
+        self.item_id = item_id  # ItemID
+        self.title = title  # Title
+        self.description = description  # Description
+        self.url = url  # ViewItemURLForNaturalSearch
+        self.img_url_arr = img_url_arr  # PictureURL
+        self.cat_id = cat_id  # PrimaryCategoryID
+        self.cat_name = cat_name  # PrimaryCategoryName
+        self.price = price  # ConvertedCurrentPrice['Value']
+        self.currency = currency  # ConvertedCurrentPrice['CurrencyID']
 
-        # for item_id in self.completed_listings.keys():
-        #     data = fetch(config['shopping_api_base'], params=shop_parameters(item_id))
-        #     self.item_details[item_id] = data

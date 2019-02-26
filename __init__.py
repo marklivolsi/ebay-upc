@@ -10,7 +10,7 @@ def main():
     print(upc.completed_listings)
     print()
     upc.item_details_main_async_loop()
-    print(upc.item_details)
+    print(upc.item_details['254110279118'])
 
 
 if __name__ == '__main__':

@@ -49,6 +49,7 @@ async def async_fetch(base, params, session):
         # return await data
 
 
+
 # def build_request(base, params):
 #     req = Request('GET', base, params).prepare()
 #     return req
