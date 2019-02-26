@@ -1,6 +1,7 @@
 import requests
 import json
 from config import config
+import urllib.request
 
 
 def find_parameters(upc):
@@ -46,3 +47,8 @@ def fetch(base, params):
 async def async_fetch(base, params, session):
     async with session.get(base, params=params) as response:
         return await response.text()
+
+
+def download_image(url):
+    filename = url.rsplit('/', 1)[-1]
+    urllib.request.urlretrieve(url, filename)
