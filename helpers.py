@@ -1,9 +1,6 @@
 import requests
-from requests import Session, Request
 import json
 from config import config
-import asyncio
-import aiohttp
 
 
 def find_parameters(upc):
@@ -32,11 +29,15 @@ def shop_parameters(item_id):
     return params
 
 
+def format_json(text):
+    data = json.loads(text)
+    return data
+
+
 def fetch(base, params):
     try:
         response = requests.get(base, params=params)
-        data = json.loads(response.text)
-        return data
+        return response
     except requests.exceptions.RequestException as error:
         print(error)
         return
@@ -45,12 +46,3 @@ def fetch(base, params):
 async def async_fetch(base, params, session):
     async with session.get(base, params=params) as response:
         return await response.text()
-        # data = json.loads(response.text())
-        # return await data
-
-
-
-# def build_request(base, params):
-#     req = Request('GET', base, params).prepare()
-#     return req
-#     # print(req.url)

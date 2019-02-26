@@ -1,9 +1,8 @@
-from helpers import find_parameters, shop_parameters, async_fetch, fetch #, build_request, async_fetch
+from helpers import find_parameters, shop_parameters, async_fetch, fetch, format_json
 from config import config
 import asyncio
 import aiohttp
 from aiohttp import client_exceptions
-import json
 
 
 class UPCFinder:
@@ -11,21 +10,14 @@ class UPCFinder:
     def __init__(self, upc):
         self.upc = upc
         self.find_params = find_parameters(self.upc)
-        # self.completed_listings = {}
-        self.item_details = {}
         self.completed_listings = []
-
-    # def get_completed_listings(self):  # Replace with get completed item ids
-    #     data = fetch(config['finding_api_base'], params=find_parameters(self.upc))
-    #     parsed_data = data['findCompletedItemsResponse'][0]['searchResult'][0]['item']
-    #     for item in parsed_data:
-    #         item_id = item['itemId'][0]
-    #         self.completed_listings[item_id] = item
+        self.completed_listing_details = {}
 
     def retrieve_completed_listings(self):
         """ Retrieve completed listings for given UPC """
         params = find_parameters(self.upc)
-        data = fetch(config['finding_api_base'], params=params)
+        response = fetch(config['finding_api_base'], params=params)
+        data = format_json(response.text)
         parsed_data = data['findCompletedItemsResponse'][0]['searchResult'][0]['item']
         for item in parsed_data:
             item_id = item.get('itemId', ['N/A'])[0]
@@ -41,42 +33,54 @@ class UPCFinder:
             listing = ItemListing(item_id, title, url, cat_id, cat_name, sell_state, price, ship_cost, currency)
             self.completed_listings.append(listing)
 
-    async def get_item_details(self, loop):
+    async def retrieve_completed_listing_details(self, loop):
+        """ Asynchronously retrieve details for completed listings based on item ID """
         base = config['shopping_api_base']
         async with aiohttp.ClientSession(loop=loop) as session:
             tasks = []
-            for item_id in self.completed_listings.keys():
-                params = shop_parameters(item_id)
+            for listing in self.completed_listings:
+                params = shop_parameters(listing.item_id)
                 task = asyncio.ensure_future(async_fetch(base, params, session))
                 tasks.append(task)
             await asyncio.gather(*tasks, return_exceptions=True)
             for task in tasks:
                 result = task.result()
-
-                # data = json.loads(result)
-                # item_id = data['Item']['ItemID']
-                # self.item_details[item_id] = data
+                data = format_json(result)
+                item_id = data['Item']['ItemID']
+                self.completed_listing_details[item_id] = data
 
     def item_details_main_async_loop(self):
+        """ Main loop. Call this to retrieve details for completed listings """
         try:
             loop = asyncio.get_event_loop()
-            loop.run_until_complete(self.get_item_details(loop))
+            loop.run_until_complete(self.retrieve_completed_listing_details(loop))
         except client_exceptions.ClientConnectorError as e:
             print(e)
+
+    def update_completed_listing_details(self):
+        """ Adds description and img urls to ItemListing instances """
+        for listing in self.completed_listings:
+            data = self.completed_listing_details[listing.item_id]
+
+            description = data['Item'].get('Description', '')
+            img_url_arr = data['Item'].get('PictureURL', [])
+
+            listing.description = description
+            listing.img_url_arr = img_url_arr
 
 
 class ItemListing:
 
     def __init__(self, item_id, title, url, cat_id, cat_name, sell_state, price, ship_cost, currency):
-        self.item_id = item_id  # ItemID
-        self.title = title  # Title
-        self.description = ''  # Description
-        self.url = url  # ViewItemURLForNaturalSearch
-        self.img_url_arr = []  # PictureURL
-        self.cat_id = cat_id  # PrimaryCategoryID
-        self.cat_name = cat_name  # PrimaryCategoryName
+        self.item_id = item_id
+        self.title = title
+        self.description = ''
+        self.url = url
+        self.img_url_arr = []
+        self.cat_id = cat_id
+        self.cat_name = cat_name
         self.sell_state = sell_state
-        self.price = price  # ConvertedCurrentPrice['Value']
+        self.price = price
         self.ship_cost = ship_cost
-        self.currency = currency  # ConvertedCurrentPrice['CurrencyID']
+        self.currency = currency
 
