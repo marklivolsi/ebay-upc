@@ -1,15 +1,15 @@
 import sys
-from PyQt5 import QtWidgets, uic
+from PyQt5 import QtWidgets, QtGui, QtCore, QtSvg
 from UI.main_window import Ui_Form
 from models import Product
 
 
-# upc = '883929638482'
-# prod = Product()
-# prod.upc = upc
-# prod.retrieve_completed_listings()
-# prod.item_details_main_async_loop()
-# prod.update_completed_listing_details()
+upc = '883929638482'
+prod = Product()
+prod.upc = upc
+prod.retrieve_completed_listings()
+prod.item_details_main_async_loop()
+prod.update_completed_listing_details()
 
 
 class App(QtWidgets.QWidget, Ui_Form):
@@ -17,11 +17,15 @@ class App(QtWidgets.QWidget, Ui_Form):
         super().__init__()
         self.setupUi(self)
 
-        self.figure = plt.figure()
+        self.price_dist_img.setScaledContents(True)
 
-        self.newproduct_btn.clicked.connect()
+        self.newproduct_btn.clicked.connect(self.set_price_histogram)
 
-
+    def set_price_histogram(self):
+        prod.price_histogram()
+        filepath = '{}.png'.format(self.upc_field.text())
+        pixmap = QtGui.QPixmap(filepath)
+        self.price_dist_img.setPixmap(pixmap.scaled(self.price_dist_img.size(), QtCore.Qt.KeepAspectRatio))
 
 
 if __name__ == '__main__':
