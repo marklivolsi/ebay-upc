@@ -3,19 +3,22 @@ from config import config
 import asyncio
 import aiohttp
 from aiohttp import client_exceptions
-from numpy import mean, median
+import numpy as np
+import matplotlib
+import matplotlib.pyplot as plt
+from matplotlib import colors
 
 
 class Product:
 
-    def __init__(self, upc):
-        self.upc = upc
+    def __init__(self):
+        self.upc = None
         self.title = ''
         self.cat_name = ''
         self.cat_id = ''
         self.description = ''
-        self.price = 0
-        self.shipping = 0
+        self.price = None
+        self.shipping = None
         self.img = ''
         self.completed_listings = []
         self.completed_listing_details = {}
@@ -24,7 +27,7 @@ class Product:
     def mean_price_completed_listings(self):
         if self.completed_listings:
             prices = [float(listing.price) for listing in self.completed_listings]
-            return mean(prices)
+            return np.mean(prices)
         else:
             return None
 
@@ -32,7 +35,21 @@ class Product:
     def median_price_completed_listings(self):
         if self.completed_listings:
             prices = [float(listing.price) for listing in self.completed_listings]
-            return median(prices)
+            return np.median(prices)
+        else:
+            return None
+
+    @property
+    def min_price_completed_listings(self):
+        if self.completed_listings:
+            return min(float(listing.price) for listing in self.completed_listings)
+        else:
+            return None
+
+    @property
+    def max_price_completed_listings(self):
+        if self.completed_listings:
+            return max(float(listing.price) for listing in self.completed_listings)
         else:
             return None
 
@@ -90,6 +107,28 @@ class Product:
 
             listing.description = description
             listing.img_url_arr = img_url_arr
+
+    def price_histogram(self):
+        if self.completed_listings:
+
+            matplotlib.use('AGG', force=True)
+            plt.ioff()
+
+            prices = [float(listing.price) for listing in self.completed_listings]
+            n_bins = 20  # np.arange(min(prices), max(prices) + 1, 1)
+
+            # Set color for each bin based on height.
+            N, bins, patches = plt.hist(prices, bins=n_bins)
+            fracs = N / N.max()
+            norm = colors.Normalize(fracs.min(), fracs.max())
+            for thisfrac, thispatch in zip(fracs, patches):
+                # noinspection PyUnresolvedReferences
+                color = plt.cm.viridis(norm(thisfrac))
+                thispatch.set_facecolor(color)
+
+            plt.xlabel('Price ($ USD)')
+            plt.ylabel('Frequency')
+            plt.savefig('{}.png'.format(self.upc), bbox_inches='tight')
 
 
 class ItemListing:
