@@ -16,7 +16,6 @@ class App(QtWidgets.QWidget, Ui_Form):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
-
         self.price_dist_img.setScaledContents(True)
 
         self.newproduct_btn.clicked.connect(self.set_price_histogram)

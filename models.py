@@ -57,7 +57,7 @@ class Product:
         """ Retrieve completed listings for given UPC """
         params = find_parameters(self.upc)
         response = fetch(config['finding_api_base'], params=params)
-        data = format_json(response.text)
+        data = format_json(response)
         parsed_data = data['findCompletedItemsResponse'][0]['searchResult'][0]['item']
         for item in parsed_data:
             item_id = item.get('itemId', ['N/A'])[0]

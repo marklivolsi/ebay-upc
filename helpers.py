@@ -5,6 +5,7 @@ import urllib.request
 
 
 def find_parameters(upc):
+    """ Returns dictionary of parameters for use in building eBay finding service API GET request """
     params = {
         'OPERATION-NAME': config['find_operation_name'],
         'SERVICE-VERSION': config['service_version'],
@@ -18,6 +19,7 @@ def find_parameters(upc):
 
 
 def shop_parameters(item_id):
+    """ Returns dictionary of parameters for use in building eBay shopping API GET request """
     params = {
         'callname': config['shop_operation_name'],
         'version': config['shopping_api_version'],
@@ -31,14 +33,23 @@ def shop_parameters(item_id):
 
 
 def format_json(text):
+    """ Formats text string as JSON (dictionary) """
     data = json.loads(text)
     return data
 
 
 def fetch(base, params):
+    """
+    Synchronous HTTP GET request
+    Arguments:
+        base = base API URL
+        params = dictionary of parameters, produced by find_parameters() or shop_parameters()
+    Returns:
+        string response or None
+    """
     try:
         response = requests.get(base, params=params)
-        return response
+        return response.text
     except requests.exceptions.RequestException as error:
         print(error)
         return
