@@ -1,3 +1,4 @@
+images/
 *.png
 __pycache__
 ebay.yaml
