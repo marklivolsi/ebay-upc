@@ -1,4 +1,4 @@
-from helpers import find_parameters, shop_parameters, async_fetch, fetch, format_json
+from helpers import find_parameters, shop_parameters, async_fetch, fetch, format_json, download_image
 from config import config
 import asyncio
 import aiohttp
@@ -7,12 +7,12 @@ import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib import colors
-
+from itertools import chain
 
 class Product:
 
     def __init__(self):
-        self.upc = None
+        self.upc = ''
         self.title = ''
         self.cat_name = ''
         self.cat_id = ''
@@ -58,7 +58,10 @@ class Product:
         params = find_parameters(self.upc)
         response = fetch(config['finding_api_base'], params=params)
         data = format_json(response)
-        parsed_data = data['findCompletedItemsResponse'][0]['searchResult'][0]['item']
+        try:
+            parsed_data = data['findCompletedItemsResponse'][0]['searchResult'][0]['item']
+        except KeyError:
+            return
         for item in parsed_data:
             item_id = item.get('itemId', ['N/A'])[0]
             title = item.get('title', ['N/A'])[0]
@@ -89,6 +92,22 @@ class Product:
                 item_id = data['Item']['ItemID']
                 self.completed_listing_details[item_id] = data
 
+    async def retrieve_image_array(self, loop):
+        async with aiohttp.ClientSession(loop=loop) as session:
+            tasks = []
+            for listing in self.completed_listings:
+                for image in listing.img_url_arr:
+                    task = asyncio.ensure_future(download_image(image, listing.item_id, session))
+                    tasks.append(task)
+            await asyncio.gather(*tasks, return_exceptions=True)
+
+    def image_array_main_async_loop(self):
+        try:
+            loop = asyncio.get_event_loop()
+            loop.run_until_complete(self.retrieve_image_array(loop))
+        except client_exceptions.ClientConnectorError as e:
+            print(e)
+
     def item_details_main_async_loop(self):
         """ Main loop. Call this to retrieve details for completed listings """
         try:
@@ -107,6 +126,8 @@ class Product:
 
             listing.description = description
             listing.img_url_arr = img_url_arr
+
+    """ Chart Functions """
 
     def price_histogram(self):
         if self.completed_listings:

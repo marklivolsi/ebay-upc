@@ -4,12 +4,19 @@ from UI.main_window import Ui_Form
 from models import Product
 
 
-upc = '883929638482'
-prod = Product()
-prod.upc = upc
-prod.retrieve_completed_listings()
-prod.item_details_main_async_loop()
-prod.update_completed_listing_details()
+def test_loop(prod):
+    prod.upc = '0794043161711'
+    prod.retrieve_completed_listings()
+    prod.item_details_main_async_loop()
+    prod.update_completed_listing_details()
+
+
+# upc = '883929638482'
+# prod = Product()
+# prod.upc = upc
+# prod.retrieve_completed_listings()
+# prod.item_details_main_async_loop()
+# prod.update_completed_listing_details()
 
 
 class App(QtWidgets.QWidget, Ui_Form):
@@ -18,13 +25,32 @@ class App(QtWidgets.QWidget, Ui_Form):
         self.setupUi(self)
         self.price_dist_img.setScaledContents(True)
 
-        self.newproduct_btn.clicked.connect(self.set_price_histogram)
+        self.clear_btn.clicked.connect(self.clear_contents)
+        self.fetchlistings_btn.clicked.connect(self.set_price_histogram)
 
     def set_price_histogram(self):
         prod.price_histogram()
         filepath = '{}.png'.format(self.upc_field.text())
         pixmap = QtGui.QPixmap(filepath)
         self.price_dist_img.setPixmap(pixmap.scaled(self.price_dist_img.size(), QtCore.Qt.KeepAspectRatio))
+
+    def clear_contents(self):
+        self.search_field.setText('')
+        self.upc_field.setText('')
+        self.title_field.setText('')
+        self.catname_field.setText('')
+        self.catid_field.setText('')
+        self.price_field.setText('')
+        self.shipping_field.setText('')
+        self.description_field.setPlainText('')
+        self.selectimg_combobox.setCurrentText('')
+        self.imgurl_field.setText('')
+        self.product_img.clear()
+        self.price_dist_img.clear()
+        self.minprice_val.setText('N/A')
+        self.maxprice_val.setText('N/A')
+        self.medianprice_val.setText('N/A')
+        self.numlistings_val.setText('N/A')
 
 
 if __name__ == '__main__':

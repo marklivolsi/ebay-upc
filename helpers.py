@@ -1,7 +1,9 @@
 import requests
 import json
 from config import config
-import urllib.request
+import aiohttp
+import aiofiles
+import os
 
 
 def find_parameters(upc):
@@ -60,6 +62,26 @@ async def async_fetch(base, params, session):
         return await response.text()
 
 
-def download_image(url):
-    filename = url.rsplit('/', 1)[-1]
-    urllib.request.urlretrieve(url, filename)
+# def download_image(url, filename):
+#     try:
+#         file = open('images/{}.jpg'.format(filename), 'wb')
+#         file.write(requests.get(url).content)
+#         file.close()
+#     except requests.exceptions.RequestException as error:
+#         print(error)
+
+
+async def download_image(url, item_id, session):
+    async with session.get(url) as response:
+        if response.status == 200:
+
+            num = '0'
+            for file in os.listdir('images/'):
+                if item_id in file:
+                    num = file.rsplit('-', 1)[-1]
+            num = int(num) + 1
+            filename = item_id + '-{}.jpg'.format(num)
+
+            file = await aiofiles.open('images/{}'.format(filename), mode='wb')
+            await file.write(await response.read())
+            await file.close()
