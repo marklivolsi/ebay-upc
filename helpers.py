@@ -100,7 +100,13 @@ def generate_histogram(arr, file_path):
 
 # Rewriting async functions
 
-async def fetch(session, url, ):
+def build_request_url(request_type, api_base, params):
+    req = requests.Request(request_type, api_base, params=params)
+    prep = req.prepare()
+    return prep.url
+
+
+async def fetch(session, url):
     async with session.get(url) as response:
         return await response.text()
 
@@ -117,12 +123,15 @@ async def async_batch_retrieve(loop, url_arr, func, **kwargs):
         tasks = []
         for url in url_arr:
             if kwargs:
-                task = asyncio.ensure_future(func(session=session, url=url, write_path=kwargs['write_path']))
+                if 'write_path' in kwargs:
+                    task = asyncio.ensure_future(func(session=session, url=url, write_path=kwargs['write_path']))
             else:
                 task = asyncio.ensure_future(func(session=session, url=url))
             tasks.append(task)
         await asyncio.gather(*tasks, return_exceptions=True)
         if tasks:
+            if len(tasks) == 1:
+                return tasks[0]
             return tasks
 
 
@@ -132,3 +141,7 @@ def run_async_loop(func):
         loop.run_until_complete(func(loop))
     except aiohttp.client_exceptions.ClientConnectionError as error:
         print(error)
+
+#
+# def parse_completed_listing(data):
+#     parse_fields = ['item_id', 'title']

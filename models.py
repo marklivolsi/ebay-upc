@@ -44,15 +44,17 @@ class Product:
         # else:
         #     return 'N/A'
 
-    def retrieve_completed_listings(self):  # parsing should be separate function
-        """ Retrieve completed listings for given UPC """
+    async def get_completed_listings(self, loop):
         params = find_parameters(self.upc)
-        response = fetch_old(config['finding_api_base'], params=params)
-        data = format_json(response)
+        url = [build_request_url('GET', config['finding_api_base'], params)]
+        task = await async_batch_retrieve(loop, url, fetch)
+        data = format_json(task.result())
+
         try:
             parsed_data = data['findCompletedItemsResponse'][0]['searchResult'][0]['item']
         except KeyError:
             return
+
         for item in parsed_data:
             item_id = item.get('itemId', ['N/A'])[0]
             title = item.get('title', ['N/A'])[0]
@@ -67,6 +69,30 @@ class Product:
             listing = ItemListing(item_id, title, url, cat_id, cat_name, sell_state, price, ship_cost, currency)
             self.completed_listings.append(listing)
 
+
+    # def retrieve_completed_listings(self):  # parsing should be separate function
+    #     """ Retrieve completed listings for given UPC """
+    #     params = find_parameters(self.upc)
+    #     response = fetch_old(config['finding_api_base'], params=params)
+    #     data = format_json(response)
+    #     try:
+    #         parsed_data = data['findCompletedItemsResponse'][0]['searchResult'][0]['item']
+    #     except KeyError:
+    #         return
+    #     for item in parsed_data:
+    #         item_id = item.get('itemId', ['N/A'])[0]
+    #         title = item.get('title', ['N/A'])[0]
+    #         url = item.get('viewItemURL', ['N/A'])[0]
+    #         cat_id = item['primaryCategory'][0].get('categoryId', ['N/A'])[0]
+    #         cat_name = item['primaryCategory'][0].get('categoryName', ['N/A'])[0]
+    #         sell_state = item['sellingStatus'][0].get('sellingState', ['N/A'])[0]
+    #         price = item['sellingStatus'][0].get('currentPrice', [{'__value__': ''}])[0]['__value__']
+    #         ship_cost = item['shippingInfo'][0].get('shippingServiceCost', [{'__value__': ''}])[0]['__value__']
+    #         currency = item['sellingStatus'][0].get('currentPrice', [{'@currencyId': ''}])[0]['@currencyId']
+    #
+    #         listing = ItemListing(item_id, title, url, cat_id, cat_name, sell_state, price, ship_cost, currency)
+    #         self.completed_listings.append(listing)
+
     # TODO: Use requests to build full URL to pass to generic async retrieve func
 
     async def get_listing_details(self, loop):
@@ -74,9 +100,10 @@ class Product:
         url_arr = []
         for listing in self.completed_listings:
             params = shop_parameters(listing.item_id)
-            req = requests.Request('GET', config['shopping_api_base'], params=params)
-            prep = req.prepare()
-            url_arr.append(prep.url)
+            # req = requests.Request('GET', config['shopping_api_base'], params=params)
+            # prep = req.prepare()
+            req = build_request_url('GET', config['shopping_api_base'], params)
+            url_arr.append(req)
 
         tasks = await async_batch_retrieve(loop, url_arr, fetch)
         for task in tasks:
@@ -101,32 +128,40 @@ class Product:
     #             item_id = data['Item']['ItemID']
     #             self.completed_listing_details[item_id] = data
 
-    async def retrieve_image_array(self, loop):
-        async with aiohttp.ClientSession(loop=loop) as session:
-            tasks = []
-            for listing in self.completed_listings:
-                num = 0
-                for image in listing.img_url_arr:
-                    file_path = '{}/{}-{}.jpg'.format(config['image_path'], listing.item_id, num)
-                    task = asyncio.ensure_future(download_image(image, file_path, session))
-                    tasks.append(task)
-                    self.img_list.append(file_path)
-                    num += 1
-            await asyncio.gather(*tasks, return_exceptions=True)
+    # async def download_img_list(self, loop):
+    #     url_path_tup_list = []
+    #     num = 0
+    #     for img_url in self.img_list:
+    #         write_path = '{}/{}-{}.jpg'.format(config['image_path'], self.upc, num)
+    #         url_path_tup_list.append(img_url, write_path)
 
-    def image_array_main_async_loop(self):  # replace with run_async_loop
-        try:
-            loop = asyncio.get_event_loop()
-            loop.run_until_complete(self.retrieve_image_array(loop))
-        except client_exceptions.ClientConnectorError as e:
-            print(e)
 
-    def item_details_main_async_loop(self):  # replace with run_async_loop
-        """ Main loop. Call this to retrieve details for completed listings """
-        try:
-            loop = asyncio.get_event_loop()
-            loop.run_until_complete(self.retrieve_completed_listing_details(loop))
-        except client_exceptions.ClientConnectorError as e:
+    # async def retrieve_image_array(self, loop):
+    #     async with aiohttp.ClientSession(loop=loop) as session:
+    #         tasks = []
+    #         for listing in self.completed_listings:
+    #             num = 0
+    #             for image in listing.img_url_arr:
+    #                 file_path = '{}/{}-{}.jpg'.format(config['image_path'], listing.item_id, num)
+    #                 task = asyncio.ensure_future(download_image(image, file_path, session))
+    #                 tasks.append(task)
+    #                 self.img_list.append(file_path)
+    #                 num += 1
+    #         await asyncio.gather(*tasks, return_exceptions=True)
+
+    # def image_array_main_async_loop(self):  # replace with run_async_loop
+    #     try:
+    #         loop = asyncio.get_event_loop()
+    #         loop.run_until_complete(self.retrieve_image_array(loop))
+    #     except client_exceptions.ClientConnectorError as e:
+    #         print(e)
+    #
+    # def item_details_main_async_loop(self):  # replace with run_async_loop
+    #     """ Main loop. Call this to retrieve details for completed listings """
+    #     try:
+    #         loop = asyncio.get_event_loop()
+    #         loop.run_until_complete(self.retrieve_completed_listing_details(loop))
+    #     except client_exceptions.ClientConnectorError as e:
             print(e)
 
     def update_completed_listing_details(self):
