@@ -22,36 +22,43 @@ class Product:
         self.img = ''
         self.completed_listings = []
         self.completed_listing_details = {}
+        self.img_list = []
 
-    @property
-    def mean_price_completed_listings(self):
+    # @property
+    # def mean_price_completed_listings(self):
+    #     if self.completed_listings:
+    #         prices = [float(listing.price) for listing in self.completed_listings]
+    #         return np.mean(prices)
+    #     else:
+    #         return None
+    #
+    # @property
+    # def median_price_completed_listings(self):
+    #     if self.completed_listings:
+    #         prices = [float(listing.price) for listing in self.completed_listings]
+    #         return np.median(prices)
+    #     else:
+    #         return None
+    #
+    # @property
+    # def min_price_completed_listings(self):
+    #     if self.completed_listings:
+    #         return min(float(listing.price) for listing in self.completed_listings)
+    #     else:
+    #         return None
+    #
+    # @property
+    # def max_price_completed_listings(self):
+    #     if self.completed_listings:
+    #         return max(float(listing.price) for listing in self.completed_listings)
+    #     else:
+    #         return None
+
+    def get_price_statistic(self, func):
         if self.completed_listings:
             prices = [float(listing.price) for listing in self.completed_listings]
-            return np.mean(prices)
-        else:
-            return None
+            return str(round(func(prices), 2))
 
-    @property
-    def median_price_completed_listings(self):
-        if self.completed_listings:
-            prices = [float(listing.price) for listing in self.completed_listings]
-            return np.median(prices)
-        else:
-            return None
-
-    @property
-    def min_price_completed_listings(self):
-        if self.completed_listings:
-            return min(float(listing.price) for listing in self.completed_listings)
-        else:
-            return None
-
-    @property
-    def max_price_completed_listings(self):
-        if self.completed_listings:
-            return max(float(listing.price) for listing in self.completed_listings)
-        else:
-            return None
 
     def retrieve_completed_listings(self):
         """ Retrieve completed listings for given UPC """
@@ -96,9 +103,13 @@ class Product:
         async with aiohttp.ClientSession(loop=loop) as session:
             tasks = []
             for listing in self.completed_listings:
+                num = 0
                 for image in listing.img_url_arr:
-                    task = asyncio.ensure_future(download_image(image, listing.item_id, session))
+                    file_path = '{}/{}-{}.jpg'.format(config['image_path'], listing.item_id, num)
+                    task = asyncio.ensure_future(download_image(image, file_path, session))
                     tasks.append(task)
+                    self.img_list.append(file_path)
+                    num += 1
             await asyncio.gather(*tasks, return_exceptions=True)
 
     def image_array_main_async_loop(self):
@@ -127,6 +138,8 @@ class Product:
             listing.description = description
             listing.img_url_arr = img_url_arr
 
+    # TODO: Add make folder for this upc function
+
     """ Chart Functions """
 
     def price_histogram(self):
@@ -136,10 +149,11 @@ class Product:
             plt.ioff()
 
             prices = [float(listing.price) for listing in self.completed_listings]
-            n_bins = 20  # np.arange(min(prices), max(prices) + 1, 1)
+            # n_bins = 20  # np.arange(min(prices), max(prices) + 1, 1)
+            # n_bins = len(prices)
 
             # Set color for each bin based on height.
-            N, bins, patches = plt.hist(prices, bins=n_bins)
+            N, bins, patches = plt.hist(prices, bins='auto')
             fracs = N / N.max()
             norm = colors.Normalize(fracs.min(), fracs.max())
             for thisfrac, thispatch in zip(fracs, patches):
@@ -147,9 +161,12 @@ class Product:
                 color = plt.cm.viridis(norm(thisfrac))
                 thispatch.set_facecolor(color)
 
+            file_path = '{}/{}.png'.format(config['chart_path'], self.upc)
             plt.xlabel('Price ($ USD)')
             plt.ylabel('Frequency')
-            plt.savefig('{}.png'.format(self.upc), bbox_inches='tight')
+            plt.savefig(file_path, bbox_inches='tight')
+
+            return file_path
 
 
 class ItemListing:

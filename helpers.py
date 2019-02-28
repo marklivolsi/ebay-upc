@@ -71,17 +71,17 @@ async def async_fetch(base, params, session):
 #         print(error)
 
 
-async def download_image(url, item_id, session):
+async def download_image(url, file_path, session):
     async with session.get(url) as response:
         if response.status == 200:
 
-            num = '0'
-            for file in os.listdir('images/'):
-                if item_id in file:
-                    num = file.rsplit('-', 1)[-1]
-            num = int(num) + 1
-            filename = item_id + '-{}.jpg'.format(num)
+            # num = '0'
+            # for file in os.listdir('images/'):
+            #     if item_id in file:
+            #         num = file.rsplit('-', 1)[-1]
+            # num = int(num) + 1
+            # filename = item_id + '-{}.jpg'.format(num)
 
-            file = await aiofiles.open('images/{}'.format(filename), mode='wb')
+            file = await aiofiles.open(file_path, mode='wb')
             await file.write(await response.read())
             await file.close()

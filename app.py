@@ -2,10 +2,12 @@ import sys
 from PyQt5 import QtWidgets, QtGui, QtCore, QtSvg
 from UI.main_window import Ui_Form
 from models import Product
+from itertools import chain
+from numpy import mean, median
 
 
 def test_loop(prod):
-    prod.upc = '0794043161711'
+    prod.upc = '786936858990'
     prod.retrieve_completed_listings()
     prod.item_details_main_async_loop()
     prod.update_completed_listing_details()
@@ -26,13 +28,33 @@ class App(QtWidgets.QWidget, Ui_Form):
         self.price_dist_img.setScaledContents(True)
 
         self.clear_btn.clicked.connect(self.clear_contents)
-        self.fetchlistings_btn.clicked.connect(self.set_price_histogram)
+        self.fetchlistings_btn.clicked.connect(self.main_loop)
 
-    def set_price_histogram(self):
-        prod.price_histogram()
-        filepath = '{}.png'.format(self.upc_field.text())
-        pixmap = QtGui.QPixmap(filepath)
+    def main_loop(self):
+        prod = Product()
+        prod.upc = self.upc_field.text()
+        prod.retrieve_completed_listings()
+        prod.item_details_main_async_loop()
+        prod.update_completed_listing_details()
+        # self.set_price_histogram(prod)
+        # prod.image_array_main_async_loop()
+        self.set_combo_box_options(prod)
+        self.set_price_statistics(prod)
+
+    def set_price_histogram(self, prod):
+        file_path = prod.price_histogram()
+        pixmap = QtGui.QPixmap(file_path)
         self.price_dist_img.setPixmap(pixmap.scaled(self.price_dist_img.size(), QtCore.Qt.KeepAspectRatio))
+
+    def set_combo_box_options(self, prod):
+        self.selectimg_combobox.addItems(prod.img_list)
+
+    def set_price_statistics(self, prod):
+        self.minprice_val.setText(prod.get_price_statistic(min))
+        self.maxprice_val.setText(prod.get_price_statistic(max))
+        self.meanprice_val.setText(prod.get_price_statistic(mean))
+        self.medianprice_val.setText(prod.get_price_statistic(median))
+        self.numlistings_val.setText(str(len(prod.completed_listings)))
 
     def clear_contents(self):
         self.search_field.setText('')

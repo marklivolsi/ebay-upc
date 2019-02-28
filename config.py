@@ -24,5 +24,7 @@ config = {
         'category_id': '617',
         'IncludeSelector': 'Description,ItemSpecifics',
         'siteid': '0',
-        'app_id': get_app_id(YAML_PATH)
+        'app_id': get_app_id(YAML_PATH),
+        'image_path': 'images',
+        'chart_path': 'charts'
      }
