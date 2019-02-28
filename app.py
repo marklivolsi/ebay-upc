@@ -42,7 +42,7 @@ class App(QtWidgets.QWidget, Ui_Form):
         self.set_price_statistics(prod)
 
     def set_price_histogram(self, prod):
-        file_path = prod.price_histogram()
+        file_path = prod.generate_price_histogram()
         pixmap = QtGui.QPixmap(file_path)
         self.price_dist_img.setPixmap(pixmap.scaled(self.price_dist_img.size(), QtCore.Qt.KeepAspectRatio))
 
