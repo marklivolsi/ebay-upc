@@ -47,7 +47,7 @@ class Product:
     def retrieve_completed_listings(self):  # parsing should be separate function
         """ Retrieve completed listings for given UPC """
         params = find_parameters(self.upc)
-        response = fetch(config['finding_api_base'], params=params)
+        response = fetch_old(config['finding_api_base'], params=params)
         data = format_json(response)
         try:
             parsed_data = data['findCompletedItemsResponse'][0]['searchResult'][0]['item']
@@ -69,21 +69,37 @@ class Product:
 
     # TODO: Use requests to build full URL to pass to generic async retrieve func
 
-    async def retrieve_completed_listing_details(self, loop):  # combine async download funcs into one helper func
-        """ Asynchronously retrieve details for completed listings based on item ID """
-        base = config['shopping_api_base']
-        async with aiohttp.ClientSession(loop=loop) as session:
-            tasks = []
-            for listing in self.completed_listings:
-                params = shop_parameters(listing.item_id)
-                task = asyncio.ensure_future(async_fetch(base, params, session))
-                tasks.append(task)
-            await asyncio.gather(*tasks, return_exceptions=True)
-            for task in tasks:
-                result = task.result()
-                data = format_json(result)
-                item_id = data['Item']['ItemID']
-                self.completed_listing_details[item_id] = data
+    async def get_listing_details(self, loop):
+        # Build request URLs
+        url_arr = []
+        for listing in self.completed_listings:
+            params = shop_parameters(listing.item_id)
+            req = requests.Request('GET', config['shopping_api_base'], params=params)
+            prep = req.prepare()
+            url_arr.append(prep.url)
+
+        tasks = await async_batch_retrieve(loop, url_arr, fetch)
+        for task in tasks:
+            result = task.result()
+            data = format_json(result)
+            item_id = data['Item']['ItemID']
+            self.completed_listing_details[item_id] = data
+
+    # async def retrieve_completed_listing_details(self, loop):  # combine async download funcs into one helper func
+    #     """ Asynchronously retrieve details for completed listings based on item ID """
+    #     base = config['shopping_api_base']
+    #     async with aiohttp.ClientSession(loop=loop) as session:
+    #         tasks = []
+    #         for listing in self.completed_listings:
+    #             params = shop_parameters(listing.item_id)
+    #             task = asyncio.ensure_future(async_fetch(base, params, session))
+    #             tasks.append(task)
+    #         await asyncio.gather(*tasks, return_exceptions=True)
+    #         for task in tasks:
+    #             result = task.result()
+    #             data = format_json(result)
+    #             item_id = data['Item']['ItemID']
+    #             self.completed_listing_details[item_id] = data
 
     async def retrieve_image_array(self, loop):
         async with aiohttp.ClientSession(loop=loop) as session:

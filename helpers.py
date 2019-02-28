@@ -42,26 +42,26 @@ def format_json(text):
     return data
 
 
-# def fetch(base, params):
-#     """
-#     Synchronous HTTP GET request
-#     Arguments:
-#         base = base API URL
-#         params = dictionary of parameters, produced by find_parameters() or shop_parameters()
-#     Returns:
-#         string response or None
-#     """
-#     try:
-#         response = requests.get(base, params=params)
-#         return response.text
-#     except requests.exceptions.RequestException as error:
-#         print(error)
-#         return
+def fetch_old(base, params):
+    """
+    Synchronous HTTP GET request
+    Arguments:
+        base = base API URL
+        params = dictionary of parameters, produced by find_parameters() or shop_parameters()
+    Returns:
+        string response or None
+    """
+    try:
+        response = requests.get(base, params=params)
+        return response.text
+    except requests.exceptions.RequestException as error:
+        print(error)
+        return
 
 
-async def async_fetch(base, params, session):
-    async with session.get(base, params=params) as response:
-        return await response.text()
+# async def async_fetch(base, params, session):
+#     async with session.get(base, params=params) as response:
+#         return await response.text()
 
 
 # def download_image(url, filename):
@@ -100,7 +100,7 @@ def generate_histogram(arr, file_path):
 
 # Rewriting async functions
 
-async def fetch(session, url):
+async def fetch(session, url, ):
     async with session.get(url) as response:
         return await response.text()
 
@@ -116,10 +116,14 @@ async def async_batch_retrieve(loop, url_arr, func, **kwargs):
     async with aiohttp.ClientSession(loop=loop) as session:
         tasks = []
         for url in url_arr:
-            task = asyncio.ensure_future(func(session=session, url=url, write_path=kwargs['write_path']))
+            if kwargs:
+                task = asyncio.ensure_future(func(session=session, url=url, write_path=kwargs['write_path']))
+            else:
+                task = asyncio.ensure_future(func(session=session, url=url))
             tasks.append(task)
         await asyncio.gather(*tasks, return_exceptions=True)
-        return tasks
+        if tasks:
+            return tasks
 
 
 def run_async_loop(func):
