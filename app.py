@@ -1,3 +1,4 @@
+from helpers import *
 import sys
 from PyQt5 import QtWidgets, QtGui, QtCore, QtSvg
 from UI.main_window import Ui_Form
@@ -6,11 +7,8 @@ from itertools import chain
 from numpy import mean, median
 
 
-def test_loop(prod):
-    prod.upc = '786936858990'
-    prod.retrieve_completed_listings()
-    prod.item_details_main_async_loop()
-    prod.update_completed_listing_details()
+# def test_loop(prod):
+#     prod.upc = '786936858990'
 
 
 # upc = '883929638482'
@@ -18,7 +16,7 @@ def test_loop(prod):
 # prod.upc = upc
 # prod.retrieve_completed_listings()
 # prod.item_details_main_async_loop()
-# prod.update_completed_listing_details()
+# prod.update_listing_details()
 
 
 class App(QtWidgets.QWidget, Ui_Form):
@@ -33,12 +31,10 @@ class App(QtWidgets.QWidget, Ui_Form):
     def main_loop(self):
         prod = Product()
         prod.upc = self.upc_field.text()
-        prod.retrieve_completed_listings()
-        prod.item_details_main_async_loop()
-        prod.update_completed_listing_details()
-        # self.set_price_histogram(prod)
-        # prod.image_array_main_async_loop()
-        self.set_combo_box_options(prod)
+        prod.main_fetch_loop()
+        # # self.set_price_histogram(prod)
+        # # prod.image_array_main_async_loop()
+        # self.set_combo_box_options(prod)
         self.set_price_statistics(prod)
 
     def set_price_histogram(self, prod):
@@ -95,7 +91,7 @@ if __name__ == '__main__':
 #     # upc = Product(TEST_UPC)
 #     # upc.retrieve_completed_listings()
 #     # upc.item_details_main_async_loop()
-#     # upc.update_completed_listing_details()
+#     # upc.update_listing_details()
 #     # print('mean: ', upc.mean_price_completed_listings)
 #     # print('median: ', upc.median_price_completed_listings)
 #     # print('min: ', upc.min_price_completed_listings)

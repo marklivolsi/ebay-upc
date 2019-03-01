@@ -4,7 +4,6 @@ from config import config
 import asyncio
 import aiohttp
 import aiofiles
-import os
 import matplotlib
 
 
@@ -40,29 +39,6 @@ def format_json(text):
     """ Formats text string as JSON (dictionary) """
     data = json.loads(text)
     return data
-
-
-def fetch_old(base, params):
-    """
-    Synchronous HTTP GET request
-    Arguments:
-        base = base API URL
-        params = dictionary of parameters, produced by find_parameters() or shop_parameters()
-    Returns:
-        string response or None
-    """
-    try:
-        response = requests.get(base, params=params)
-        return response.text
-    except requests.exceptions.RequestException as error:
-        print(error)
-        return
-
-
-# async def async_fetch(base, params, session):
-#     async with session.get(base, params=params) as response:
-#         return await response.text()
-
 
 # def download_image(url, filename):
 #     try:
@@ -138,10 +114,7 @@ async def async_batch_retrieve(loop, url_arr, func, **kwargs):
 def run_async_loop(func):
     try:
         loop = asyncio.get_event_loop()
-        loop.run_until_complete(func(loop))
+        data = loop.run_until_complete(func(loop))
+        return data
     except aiohttp.client_exceptions.ClientConnectionError as error:
         print(error)
-
-#
-# def parse_completed_listing(data):
-#     parse_fields = ['item_id', 'title']

@@ -1,14 +1,5 @@
 from helpers import *
 from config import config
-import asyncio
-import aiohttp
-from aiohttp import client_exceptions
-import requests
-# import numpy as np
-# import matplotlib
-# import matplotlib.pyplot as plt
-# from matplotlib import colors
-# from itertools import chain
 
 
 class Product:
@@ -19,8 +10,8 @@ class Product:
         self.cat_name = ''
         self.cat_id = ''
         self.description = ''
-        self.price = None
-        self.shipping = None
+        self.price = ''
+        self.shipping = ''
         self.img = ''
         self.completed_listings = []
         self.completed_listing_details = {}
@@ -28,28 +19,45 @@ class Product:
 
     @property
     def price_array(self):
+        """ Return array of float listing price values """
         if self.completed_listings:
             return [float(listing.price) for listing in self.completed_listings]
         else:
             return None
 
     def get_price_statistic(self, func):
+        """ Return string result of performing provided statistic function on price array """
         if self.price_array:
             return str(round(func(self.price_array), 2))
         else:
             return 'N/A'
-        # if self.completed_listings:
-        #     # price_arr = [float(listing.price) for listing in self.completed_listings]
-        #     return str(round(func(self.price_array), 2))
-        # else:
-        #     return 'N/A'
 
-    async def get_completed_listings(self, loop):
+    def generate_price_histogram(self):
+        """ Generate histogram image and return file path """
+        if self.price_array:
+            file_path = '{}/{}.jpg'.format(config['chart_path'], self.upc)
+            generate_histogram(self.price_array, file_path)
+            return file_path
+
+    # Methods to asynchronously fetch data for completed listings
+
+    def main_fetch_loop(self):
+        """ Main loop. Call this to collect all completed listing data for a given UPC """
+        data = run_async_loop(self.fetch_completed_listings)
+        self.parse_listings(data)
+        run_async_loop(self.fetch_listing_details)
+        self.update_listing_details()
+
+    async def fetch_completed_listings(self, loop):
+        """ Return JSON dictionary of completed listings based on product UPC """
         params = find_parameters(self.upc)
         url = [build_request_url('GET', config['finding_api_base'], params)]
         task = await async_batch_retrieve(loop, url, fetch)
         data = format_json(task.result())
+        return data
 
+    def parse_listings(self, data):
+        """ Parse JSON dictionary of completed listings and append ItemListing objects to completed listings array """
         try:
             parsed_data = data['findCompletedItemsResponse'][0]['searchResult'][0]['item']
         except KeyError:
@@ -69,6 +77,35 @@ class Product:
             listing = ItemListing(item_id, title, url, cat_id, cat_name, sell_state, price, ship_cost, currency)
             self.completed_listings.append(listing)
 
+    def build_url_arr(self):
+        """ Return url request array from completed item listings. """
+        url_arr = []
+        for listing in self.completed_listings:
+            params = shop_parameters(listing.item_id)
+            req = build_request_url('GET', config['shopping_api_base'], params)
+            url_arr.append(req)
+        return url_arr
+
+    async def fetch_listing_details(self, loop):
+        """ Async fetch completed listing data and append to completed listing detail dict  """
+        url_arr = self.build_url_arr()
+        tasks = await async_batch_retrieve(loop, url_arr, fetch)
+        for task in tasks:
+            result = task.result()
+            data = format_json(result)
+            item_id = data['Item']['ItemID']
+            self.completed_listing_details[item_id] = data
+
+    def update_listing_details(self):
+        """ Add description and image urls to ItemListing instances """
+        for listing in self.completed_listings:
+            data = self.completed_listing_details[listing.item_id]
+
+            description = data['Item'].get('Description', '')
+            img_url_arr = data['Item'].get('PictureURL', [])
+
+            listing.description = description
+            listing.img_url_arr = img_url_arr
 
     # def retrieve_completed_listings(self):  # parsing should be separate function
     #     """ Retrieve completed listings for given UPC """
@@ -93,24 +130,15 @@ class Product:
     #         listing = ItemListing(item_id, title, url, cat_id, cat_name, sell_state, price, ship_cost, currency)
     #         self.completed_listings.append(listing)
 
-    # TODO: Use requests to build full URL to pass to generic async retrieve func
 
-    async def get_listing_details(self, loop):
         # Build request URLs
-        url_arr = []
-        for listing in self.completed_listings:
-            params = shop_parameters(listing.item_id)
+        # url_arr = []
+        # for listing in self.completed_listings:
+        #     params = shop_parameters(listing.item_id)
             # req = requests.Request('GET', config['shopping_api_base'], params=params)
             # prep = req.prepare()
-            req = build_request_url('GET', config['shopping_api_base'], params)
-            url_arr.append(req)
-
-        tasks = await async_batch_retrieve(loop, url_arr, fetch)
-        for task in tasks:
-            result = task.result()
-            data = format_json(result)
-            item_id = data['Item']['ItemID']
-            self.completed_listing_details[item_id] = data
+            # req = build_request_url('GET', config['shopping_api_base'], params)
+            # url_arr.append(req)
 
     # async def retrieve_completed_listing_details(self, loop):  # combine async download funcs into one helper func
     #     """ Asynchronously retrieve details for completed listings based on item ID """
@@ -162,28 +190,8 @@ class Product:
     #         loop = asyncio.get_event_loop()
     #         loop.run_until_complete(self.retrieve_completed_listing_details(loop))
     #     except client_exceptions.ClientConnectorError as e:
-            print(e)
+    #         print(e)
 
-    def update_completed_listing_details(self):
-        """ Add description and img urls to ItemListing instances """
-        for listing in self.completed_listings:
-            data = self.completed_listing_details[listing.item_id]
-
-            description = data['Item'].get('Description', '')
-            img_url_arr = data['Item'].get('PictureURL', [])
-
-            listing.description = description
-            listing.img_url_arr = img_url_arr
-
-    # TODO: Add make folder for this upc function
-
-    """ Chart Functions """
-
-    def generate_price_histogram(self):
-        if self.price_array:
-            file_path = '{}/{}.jpg'.format(config['chart_path'], self.upc)
-            generate_histogram(self.price_array, file_path)
-            return file_path
 
         # if self.completed_listings:
         #     price_arr = [float(listing.price) for listing in self.completed_listings]
