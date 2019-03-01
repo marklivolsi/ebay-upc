@@ -32,9 +32,9 @@ class App(QtWidgets.QWidget, Ui_Form):
         prod = Product()
         prod.upc = self.upc_field.text()
         prod.main_fetch_loop()
-        # # self.set_price_histogram(prod)
+        self.set_price_histogram(prod)
         # # prod.image_array_main_async_loop()
-        # self.set_combo_box_options(prod)
+        self.set_combo_box_options(prod)
         self.set_price_statistics(prod)
 
     def set_price_histogram(self, prod):
@@ -43,7 +43,12 @@ class App(QtWidgets.QWidget, Ui_Form):
         self.price_dist_img.setPixmap(pixmap.scaled(self.price_dist_img.size(), QtCore.Qt.KeepAspectRatio))
 
     def set_combo_box_options(self, prod):
-        self.selectimg_combobox.addItems(prod.img_list)
+        # self.selectimg_combobox.addItems(prod.img_url_list)
+        self.selectimg_combobox_1.addItems(prod.get_property_list('img_url_arr'))
+        self.selectimg_combobox_2.addItems(prod.get_property_list('img_url_arr'))
+        self.title_combobox.addItems(prod.get_property_list('title'))
+        self.catname_combobox.addItems(prod.get_property_list('cat_name'))
+        self.catid_combobox.addItems(prod.get_property_list('cat_id'))
 
     def set_price_statistics(self, prod):
         self.minprice_val.setText(prod.get_price_statistic(min))
@@ -76,38 +81,3 @@ if __name__ == '__main__':
     myapp = App()
     myapp.show()
     sys.exit(app.exec_())
-
-
-
-
-
-# from models import Product
-#
-#
-# TEST_UPC = '883929638482'
-#
-#
-# def main():
-#     # upc = Product(TEST_UPC)
-#     # upc.retrieve_completed_listings()
-#     # upc.item_details_main_async_loop()
-#     # upc.update_listing_details()
-#     # print('mean: ', upc.mean_price_completed_listings)
-#     # print('median: ', upc.median_price_completed_listings)
-#     # print('min: ', upc.min_price_completed_listings)
-#     # print('max: ', upc.max_price_completed_listings)
-#     # for item in upc.completed_listings:
-#     #     print(item.item_id, item.price, item.img_url_arr, item.description)
-#
-#     import sys
-#     from PyQt5 import QtWidgets, uic
-#
-#     app = QtWidgets.QApplication(sys.argv)
-#     window = uic.loadUi('UI/main_window.ui')
-#     window.show()
-#
-#     sys.exit(app.exec_())
-#
-#
-# if __name__ == '__main__':
-#     main()

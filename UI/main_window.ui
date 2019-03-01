@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1068</width>
-    <height>937</height>
+    <width>1392</width>
+    <height>966</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,188 +16,50 @@
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="1" column="0">
     <layout class="QGridLayout" name="gridLayout">
-     <item row="8" column="1" colspan="2">
-      <widget class="QComboBox" name="selectimg_combobox"/>
-     </item>
-     <item row="5" column="0">
-      <widget class="QLabel" name="price_label">
+     <item row="11" column="1">
+      <widget class="QLabel" name="selectimg_label_2">
        <property name="text">
-        <string>Price:</string>
+        <string>Select image 2:</string>
        </property>
       </widget>
      </item>
-     <item row="1" column="2">
-      <widget class="QPushButton" name="fetchlistings_btn">
-       <property name="text">
-        <string>Fetch Listings</string>
-       </property>
-      </widget>
+     <item row="3" column="2">
+      <widget class="QLineEdit" name="catname_field"/>
      </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="catname_label">
-       <property name="text">
-        <string>Category name:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="4">
-      <widget class="QLabel" name="meanprice_val">
+     <item row="8" column="2">
+      <widget class="QPushButton" name="prev_desc_btn">
        <property name="minimumSize">
         <size>
-         <width>70</width>
+         <width>0</width>
          <height>0</height>
         </size>
        </property>
        <property name="text">
-        <string>N/A</string>
+        <string>&lt;&lt; Prev Description</string>
        </property>
       </widget>
      </item>
-     <item row="5" column="3" alignment="Qt::AlignRight">
-      <widget class="QLabel" name="medianprice_label">
-       <property name="text">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;Median Price:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="1" colspan="2">
-      <widget class="QLineEdit" name="catid_field"/>
-     </item>
-     <item row="5" column="1" colspan="2">
-      <widget class="QLineEdit" name="price_field"/>
-     </item>
-     <item row="6" column="1" colspan="2">
-      <widget class="QLineEdit" name="shipping_field"/>
-     </item>
-     <item row="1" column="3" colspan="2" alignment="Qt::AlignHCenter">
-      <widget class="QLabel" name="listingstats_label">
-       <property name="text">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Completed Listing Statistics&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="3" alignment="Qt::AlignRight">
-      <widget class="QLabel" name="minprice_label">
-       <property name="text">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;Min Price:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="4">
-      <widget class="QLabel" name="numlistings_val">
-       <property name="text">
-        <string>N/A</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="3" alignment="Qt::AlignRight">
-      <widget class="QLabel" name="maxprice_label">
-       <property name="text">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;Max Price:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="3">
-      <widget class="QLabel" name="numlistings_label">
-       <property name="text">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;# Listings:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="0">
+     <item row="0" column="1">
       <widget class="QLabel" name="appheader_label">
        <property name="text">
         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Product Details&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
       </widget>
      </item>
-     <item row="3" column="1" colspan="2">
-      <widget class="QLineEdit" name="catname_field"/>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="upc_label">
-       <property name="text">
-        <string>UPC code:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1" colspan="2">
-      <widget class="QLineEdit" name="title_field"/>
-     </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="title_label">
-       <property name="text">
-        <string>Product title:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="0">
-      <widget class="QLabel" name="catid_label">
-       <property name="text">
-        <string>Category ID:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QLineEdit" name="upc_field"/>
-     </item>
-     <item row="5" column="4">
-      <widget class="QLabel" name="medianprice_val">
+     <item row="13" column="1">
+      <widget class="QPushButton" name="search_btn">
        <property name="minimumSize">
         <size>
-         <width>70</width>
+         <width>0</width>
          <height>0</height>
         </size>
        </property>
-       <property name="text">
-        <string>N/A</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="4">
-      <widget class="QPushButton" name="search_btn">
        <property name="text">
         <string>Search</string>
        </property>
       </widget>
      </item>
-     <item row="3" column="4">
-      <widget class="QLabel" name="maxprice_val">
-       <property name="minimumSize">
-        <size>
-         <width>70</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>N/A</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="2" colspan="2">
-      <widget class="QLineEdit" name="search_field"/>
-     </item>
-     <item row="4" column="3" alignment="Qt::AlignRight">
-      <widget class="QLabel" name="meanprice_label">
-       <property name="text">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;Mean Price:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="4">
-      <widget class="QLabel" name="minprice_val">
-       <property name="minimumSize">
-        <size>
-         <width>70</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>N/A</string>
-       </property>
-      </widget>
-     </item>
-     <item row="8" column="3" colspan="2" alignment="Qt::AlignHCenter">
+     <item row="11" column="4" colspan="2" alignment="Qt::AlignHCenter">
       <widget class="QLabel" name="pricedistribution_label">
        <property name="minimumSize">
         <size>
@@ -213,14 +75,118 @@
        </property>
       </widget>
      </item>
-     <item row="6" column="0">
+     <item row="1" column="3">
+      <widget class="QPushButton" name="fetchlistings_btn">
+       <property name="text">
+        <string>Fetch Listings</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="3">
+      <widget class="QComboBox" name="catid_combobox"/>
+     </item>
+     <item row="9" column="3">
+      <widget class="QComboBox" name="selectimg_combobox_1"/>
+     </item>
+     <item row="8" column="3">
+      <widget class="QPushButton" name="next_desc_btn">
+       <property name="text">
+        <string>Next Description &gt;&gt;</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="3">
+      <widget class="QComboBox" name="title_combobox"/>
+     </item>
+     <item row="11" column="2">
+      <widget class="QLineEdit" name="imgurl_field_2"/>
+     </item>
+     <item row="5" column="2">
+      <widget class="QLineEdit" name="price_field"/>
+     </item>
+     <item row="6" column="2">
+      <widget class="QLineEdit" name="shipping_field"/>
+     </item>
+     <item row="11" column="3">
+      <widget class="QComboBox" name="selectimg_combobox_2"/>
+     </item>
+     <item row="9" column="2">
+      <widget class="QLineEdit" name="imgurl_field_1"/>
+     </item>
+     <item row="7" column="2" colspan="2">
+      <widget class="QPlainTextEdit" name="description_field">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item row="12" column="2">
+      <widget class="QLabel" name="product_img_1">
+       <property name="minimumSize">
+        <size>
+         <width>280</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="3">
+      <widget class="QComboBox" name="catname_combobox"/>
+     </item>
+     <item row="6" column="1">
       <widget class="QLabel" name="shipping_label">
        <property name="text">
         <string>Shipping:</string>
        </property>
       </widget>
      </item>
-     <item row="10" column="3" colspan="2" alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+     <item row="2" column="5">
+      <widget class="QLabel" name="minprice_val">
+       <property name="minimumSize">
+        <size>
+         <width>70</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>N/A</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="4" alignment="Qt::AlignRight">
+      <widget class="QLabel" name="meanprice_label">
+       <property name="text">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;Mean Price:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="5">
+      <widget class="QLabel" name="maxprice_val">
+       <property name="minimumSize">
+        <size>
+         <width>70</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>N/A</string>
+       </property>
+      </widget>
+     </item>
+     <item row="9" column="1">
+      <widget class="QLabel" name="selectimg_label_1">
+       <property name="text">
+        <string>Select image 1:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="12" column="4" colspan="2" alignment="Qt::AlignHCenter|Qt::AlignVCenter">
       <widget class="QLabel" name="price_dist_img">
        <property name="minimumSize">
         <size>
@@ -233,60 +199,154 @@
        </property>
       </widget>
      </item>
-     <item row="8" column="0">
-      <widget class="QLabel" name="selectimg_label">
-       <property name="text">
-        <string>Select image:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="7" column="0">
+     <item row="7" column="1">
       <widget class="QLabel" name="description_label">
        <property name="text">
         <string>Description:</string>
        </property>
       </widget>
      </item>
-     <item row="7" column="1" colspan="2">
-      <widget class="QPlainTextEdit" name="description_field">
+     <item row="12" column="3">
+      <widget class="QLabel" name="product_img_2">
        <property name="minimumSize">
         <size>
-         <width>0</width>
+         <width>321</width>
          <height>0</height>
         </size>
        </property>
-      </widget>
-     </item>
-     <item row="9" column="0">
-      <widget class="QLabel" name="imgurl_label">
        <property name="text">
-        <string>Image URL:</string>
+        <string/>
        </property>
       </widget>
      </item>
-     <item row="9" column="1" colspan="2">
-      <widget class="QLineEdit" name="imgurl_field"/>
+     <item row="2" column="2">
+      <widget class="QLineEdit" name="title_field"/>
      </item>
-     <item row="11" column="4">
-      <widget class="QPushButton" name="clear_btn">
-       <property name="text">
-        <string>Clear</string>
-       </property>
-      </widget>
-     </item>
-     <item row="11" column="3">
+     <item row="13" column="4">
       <widget class="QPushButton" name="save_btn">
        <property name="text">
         <string>Save</string>
        </property>
       </widget>
      </item>
-     <item row="10" column="0" colspan="3">
-      <widget class="QLabel" name="product_img">
+     <item row="13" column="5">
+      <widget class="QPushButton" name="clear_btn">
        <property name="text">
-        <string/>
+        <string>Clear</string>
        </property>
       </widget>
+     </item>
+     <item row="2" column="4" alignment="Qt::AlignRight">
+      <widget class="QLabel" name="minprice_label">
+       <property name="text">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;Min Price:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="2">
+      <widget class="QLineEdit" name="upc_field"/>
+     </item>
+     <item row="3" column="4" alignment="Qt::AlignRight">
+      <widget class="QLabel" name="maxprice_label">
+       <property name="text">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;Max Price:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="4">
+      <widget class="QLabel" name="numlistings_label">
+       <property name="text">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;# Listings:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="5">
+      <widget class="QLabel" name="numlistings_val">
+       <property name="text">
+        <string>N/A</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QLabel" name="catid_label">
+       <property name="text">
+        <string>Category ID:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QLabel" name="title_label">
+       <property name="text">
+        <string>Product title:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="5">
+      <widget class="QLabel" name="medianprice_val">
+       <property name="minimumSize">
+        <size>
+         <width>70</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>N/A</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLabel" name="upc_label">
+       <property name="text">
+        <string>UPC code:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1">
+      <widget class="QLabel" name="price_label">
+       <property name="text">
+        <string>Price:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QLabel" name="catname_label">
+       <property name="text">
+        <string>Category name:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="4" colspan="2" alignment="Qt::AlignHCenter">
+      <widget class="QLabel" name="listingstats_label">
+       <property name="text">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Completed Listing Statistics&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="5">
+      <widget class="QLabel" name="meanprice_val">
+       <property name="minimumSize">
+        <size>
+         <width>70</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>N/A</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="4" alignment="Qt::AlignRight">
+      <widget class="QLabel" name="medianprice_label">
+       <property name="text">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;Median Price:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="2">
+      <widget class="QLineEdit" name="catid_field"/>
+     </item>
+     <item row="13" column="2">
+      <widget class="QLineEdit" name="search_field"/>
      </item>
     </layout>
    </item>

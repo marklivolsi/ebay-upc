@@ -15,7 +15,16 @@ class Product:
         self.img = ''
         self.completed_listings = []
         self.completed_listing_details = {}
-        self.img_list = []
+        # self.img_list = []
+
+    # @property
+    # def img_url_list(self):
+    #     url_arr = []
+    #     if self.completed_listings:
+    #         for listing in self.completed_listings:
+    #             for url in listing.img_url_arr:
+    #                 url_arr.append(url)
+    #     return url_arr
 
     @property
     def price_array(self):
@@ -25,17 +34,31 @@ class Product:
         else:
             return None
 
+    def get_property_list(self, prop):
+        items = set()
+        if self.completed_listings:
+            # return list(set([getattr(listing, prop) for listing in self.completed_listings]))
+            for listing in self.completed_listings:
+                item = getattr(listing, prop)
+                if type(item) == list:
+                    for i in item:
+                        items.add(i)
+                else:
+                    items.add(item)
+                # items.add(*getattr(listing, prop))
+        return list(items)
+
     def get_price_statistic(self, func):
         """ Return string result of performing provided statistic function on price array """
         if self.price_array:
-            return str(round(func(self.price_array), 2))
+            return '{:.2f}'.format(func(self.price_array))
         else:
             return 'N/A'
 
     def generate_price_histogram(self):
         """ Generate histogram image and return file path """
         if self.price_array:
-            file_path = '{}/{}.jpg'.format(config['chart_path'], self.upc)
+            file_path = '{}/{}.png'.format(config['chart_path'], self.upc)
             generate_histogram(self.price_array, file_path)
             return file_path
 
@@ -100,61 +123,12 @@ class Product:
         """ Add description and image urls to ItemListing instances """
         for listing in self.completed_listings:
             data = self.completed_listing_details[listing.item_id]
-
             description = data['Item'].get('Description', '')
             img_url_arr = data['Item'].get('PictureURL', [])
 
             listing.description = description
             listing.img_url_arr = img_url_arr
 
-    # def retrieve_completed_listings(self):  # parsing should be separate function
-    #     """ Retrieve completed listings for given UPC """
-    #     params = find_parameters(self.upc)
-    #     response = fetch_old(config['finding_api_base'], params=params)
-    #     data = format_json(response)
-    #     try:
-    #         parsed_data = data['findCompletedItemsResponse'][0]['searchResult'][0]['item']
-    #     except KeyError:
-    #         return
-    #     for item in parsed_data:
-    #         item_id = item.get('itemId', ['N/A'])[0]
-    #         title = item.get('title', ['N/A'])[0]
-    #         url = item.get('viewItemURL', ['N/A'])[0]
-    #         cat_id = item['primaryCategory'][0].get('categoryId', ['N/A'])[0]
-    #         cat_name = item['primaryCategory'][0].get('categoryName', ['N/A'])[0]
-    #         sell_state = item['sellingStatus'][0].get('sellingState', ['N/A'])[0]
-    #         price = item['sellingStatus'][0].get('currentPrice', [{'__value__': ''}])[0]['__value__']
-    #         ship_cost = item['shippingInfo'][0].get('shippingServiceCost', [{'__value__': ''}])[0]['__value__']
-    #         currency = item['sellingStatus'][0].get('currentPrice', [{'@currencyId': ''}])[0]['@currencyId']
-    #
-    #         listing = ItemListing(item_id, title, url, cat_id, cat_name, sell_state, price, ship_cost, currency)
-    #         self.completed_listings.append(listing)
-
-
-        # Build request URLs
-        # url_arr = []
-        # for listing in self.completed_listings:
-        #     params = shop_parameters(listing.item_id)
-            # req = requests.Request('GET', config['shopping_api_base'], params=params)
-            # prep = req.prepare()
-            # req = build_request_url('GET', config['shopping_api_base'], params)
-            # url_arr.append(req)
-
-    # async def retrieve_completed_listing_details(self, loop):  # combine async download funcs into one helper func
-    #     """ Asynchronously retrieve details for completed listings based on item ID """
-    #     base = config['shopping_api_base']
-    #     async with aiohttp.ClientSession(loop=loop) as session:
-    #         tasks = []
-    #         for listing in self.completed_listings:
-    #             params = shop_parameters(listing.item_id)
-    #             task = asyncio.ensure_future(async_fetch(base, params, session))
-    #             tasks.append(task)
-    #         await asyncio.gather(*tasks, return_exceptions=True)
-    #         for task in tasks:
-    #             result = task.result()
-    #             data = format_json(result)
-    #             item_id = data['Item']['ItemID']
-    #             self.completed_listing_details[item_id] = data
 
     # async def download_img_list(self, loop):
     #     url_path_tup_list = []
@@ -192,36 +166,6 @@ class Product:
     #     except client_exceptions.ClientConnectorError as e:
     #         print(e)
 
-
-        # if self.completed_listings:
-        #     price_arr = [float(listing.price) for listing in self.completed_listings]
-        #     file_path = '{}/{}.jpg'.format(config['chart_path'], self.upc)
-        #     generate_histogram(price_arr, file_path)
-        #     return file_path
-        # else:
-        #     pass
-            # matplotlib.use('AGG', force=True)
-            # plt.ioff()
-            #
-            # prices = [float(listing.price) for listing in self.completed_listings]
-            # # n_bins = 20  # np.arange(min(prices), max(prices) + 1, 1)
-            # # n_bins = len(prices)
-            #
-            # # Set color for each bin based on height.
-            # N, bins, patches = plt.hist(prices, bins='auto')
-            # fracs = N / N.max()
-            # norm = colors.Normalize(fracs.min(), fracs.max())
-            # for thisfrac, thispatch in zip(fracs, patches):
-            #     # noinspection PyUnresolvedReferences
-            #     color = plt.cm.viridis(norm(thisfrac))
-            #     thispatch.set_facecolor(color)
-            #
-            # file_path = '{}/{}.png'.format(config['chart_path'], self.upc)
-            # plt.xlabel('Price ($ USD)')
-            # plt.ylabel('Frequency')
-            # plt.savefig(file_path, bbox_inches='tight')
-            #
-            # return file_path
 
 
 class ItemListing:

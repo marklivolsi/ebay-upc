@@ -5,6 +5,7 @@ import asyncio
 import aiohttp
 import aiofiles
 import matplotlib
+import matplotlib.pyplot as plt
 
 
 def find_parameters(upc):
@@ -59,19 +60,19 @@ async def download_image(url, file_path, session):
 
 def generate_histogram(arr, file_path):
     matplotlib.use('AGG', force=True)
-    matplotlib.pyplot.ioff()
+    plt.ioff()
 
     # Set colors based on bin height
-    N, bins, patches = matplotlib.pyplot.hist(arr, bins='auto')
+    N, bins, patches = plt.hist(arr, bins='auto')
     fracs = N / N.max()
     norm = matplotlib.colors.Normalize(fracs.min(), fracs.max())
     for this_frac, this_patch in zip(fracs, patches):
-        color = matplotlib.pyplot.cm.viridis(norm(this_frac))
+        color = plt.cm.viridis(norm(this_frac))
         this_patch.set_facecolor(color)
 
-    matplotlib.pyplot.xlabel('Price ($ USD)')
-    matplotlib.pyplot.ylabel('Frequency')
-    matplotlib.pyplot.savefig(file_path, bbox_inches='tight')
+    plt.xlabel('Price ($ USD)')
+    plt.ylabel('Frequency')
+    plt.savefig(file_path, bbox_inches='tight')
 
 
 # Rewriting async functions
