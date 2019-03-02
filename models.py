@@ -1,5 +1,6 @@
 from helpers import *
 from config import config
+import collections
 
 
 class Product:
@@ -37,7 +38,6 @@ class Product:
     def get_property_list(self, prop):
         items = set()
         if self.completed_listings:
-            # return list(set([getattr(listing, prop) for listing in self.completed_listings]))
             for listing in self.completed_listings:
                 item = getattr(listing, prop)
                 if type(item) == list:
@@ -45,7 +45,6 @@ class Product:
                         items.add(i)
                 else:
                     items.add(item)
-                # items.add(*getattr(listing, prop))
         return list(items)
 
     def get_price_statistic(self, func):

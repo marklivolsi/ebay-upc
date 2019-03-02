@@ -1,22 +1,9 @@
-from helpers import *
+# from helpers import *
 import sys
-from PyQt5 import QtWidgets, QtGui, QtCore, QtSvg
+from PyQt5 import QtWidgets, QtGui, QtCore
 from UI.main_window import Ui_Form
 from models import Product
-from itertools import chain
 from numpy import mean, median
-
-
-# def test_loop(prod):
-#     prod.upc = '786936858990'
-
-
-# upc = '883929638482'
-# prod = Product()
-# prod.upc = upc
-# prod.retrieve_completed_listings()
-# prod.item_details_main_async_loop()
-# prod.update_listing_details()
 
 
 class App(QtWidgets.QWidget, Ui_Form):
@@ -43,7 +30,6 @@ class App(QtWidgets.QWidget, Ui_Form):
         self.price_dist_img.setPixmap(pixmap.scaled(self.price_dist_img.size(), QtCore.Qt.KeepAspectRatio))
 
     def set_combo_box_options(self, prod):
-        # self.selectimg_combobox.addItems(prod.img_url_list)
         self.selectimg_combobox_1.addItems(prod.get_property_list('img_url_arr'))
         self.selectimg_combobox_2.addItems(prod.get_property_list('img_url_arr'))
         self.title_combobox.addItems(prod.get_property_list('title'))
