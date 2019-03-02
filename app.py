@@ -10,12 +10,17 @@ class App(QtWidgets.QWidget, Ui_Form):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
+        self.prod = Product()
+        self.desc_index = 0
         self.price_dist_img.setScaledContents(True)
         self.product_img_1.setScaledContents(False)
         self.product_img_2.setScaledContents(False)
 
         self.clear_btn.clicked.connect(self.clear_contents)
         self.fetchlistings_btn.clicked.connect(self.main_loop)
+
+        self.next_desc_btn.clicked.connect(self.next_description)
+        self.prev_desc_btn.clicked.connect(self.prev_description)
 
         self.title_combobox.activated.connect(self.set_title_field)
         self.catname_combobox.activated.connect(self.set_catname_field)
@@ -24,14 +29,32 @@ class App(QtWidgets.QWidget, Ui_Form):
         self.selectimg_combobox_2.activated.connect(self.set_img_combobox_2)
 
     def main_loop(self):
-        prod = Product()
-        prod.upc = self.upc_field.text()
-        prod.main_fetch_loop()
-        self.set_price_histogram(prod)
+        # prod = Product()
+        self.prod.upc = self.upc_field.text()
+        self.prod.main_fetch_loop()
+        self.set_price_histogram()
         # # prod.image_array_main_async_loop()
-        self.set_combo_box_options(prod)
-        self.set_price_statistics(prod)
-        self.populate_fields(prod)
+        self.set_combo_box_options()
+        self.set_price_statistics()
+        self.populate_fields()
+
+    # def change_description(self, prod, direction):
+    #     if direction == 'next':
+    #         self.desc_index += 1
+    #     elif direction == 'prev':
+    #         self.desc_index -= 1
+    #     self.description_field.setPlainText(strip_html_tags(prod.get_property_list('description')[self.desc_index]))
+
+    def set_description(self, ind):
+        self.description_field.setPlainText(strip_html_tags(self.prod.get_property_list('description')[ind]))
+
+    def next_description(self):
+        self.desc_index += 1
+        self.set_description(self.desc_index)
+
+    def prev_description(self):
+        self.desc_index -= 1
+        self.set_description(self.desc_index)
 
     def set_title_field(self):
         self.title_field.setText(self.title_combobox.currentText())
@@ -55,40 +78,36 @@ class App(QtWidgets.QWidget, Ui_Form):
     def set_product_image(self, url, img_field):
         pixmap = QtGui.QPixmap.fromImage(show_img_from_url(url))
         img_field.setPixmap(pixmap.scaled(img_field.size(), QtCore.Qt.KeepAspectRatio))
-    # def set_product_image_1(self):
-    #     pixmap = QtGui.QPixmap(show_img_from_url(url))
 
-    def populate_fields(self, prod):
+    def populate_fields(self):
         self.set_title_field()
         self.set_catname_field()
         self.set_catid_field()
-        self.price_field.setText(prod.get_price_statistic(median))
+        self.price_field.setText(self.prod.get_price_statistic(median))
         self.shipping_field.setText('0.00')
-        self.description_field.setPlainText(strip_html_tags(prod.get_property_list('description')[0]))
+        self.description_field.setPlainText(strip_html_tags(self.prod.get_property_list('description')[0]))
         self.set_img_combobox_1()
         self.selectimg_combobox_2.setCurrentIndex(1)
         self.set_img_combobox_2()
-        # self.set_product_image(self.selectimg_combobox_1, self.product_img_1)
-        # self.set_product_image(self.selectimg_combobox_2, self.product_img_2)
 
-    def set_price_histogram(self, prod):
-        file_path = prod.generate_price_histogram()
+    def set_price_histogram(self):
+        file_path = self.prod.generate_price_histogram()
         pixmap = QtGui.QPixmap(file_path)
         self.price_dist_img.setPixmap(pixmap.scaled(self.price_dist_img.size(), QtCore.Qt.KeepAspectRatio))
 
-    def set_combo_box_options(self, prod):
-        self.selectimg_combobox_1.addItems(prod.get_property_list('img_url_arr'))
-        self.selectimg_combobox_2.addItems(prod.get_property_list('img_url_arr'))
-        self.title_combobox.addItems(prod.get_property_list('title'))
-        self.catname_combobox.addItems(prod.get_property_list('cat_name'))
-        self.catid_combobox.addItems(prod.get_property_list('cat_id'))
+    def set_combo_box_options(self):
+        self.selectimg_combobox_1.addItems(self.prod.get_property_list('img_url_arr'))
+        self.selectimg_combobox_2.addItems(self.prod.get_property_list('img_url_arr'))
+        self.title_combobox.addItems(self.prod.get_property_list('title'))
+        self.catname_combobox.addItems(self.prod.get_property_list('cat_name'))
+        self.catid_combobox.addItems(self.prod.get_property_list('cat_id'))
 
-    def set_price_statistics(self, prod):
-        self.minprice_val.setText(prod.get_price_statistic(min))
-        self.maxprice_val.setText(prod.get_price_statistic(max))
-        self.meanprice_val.setText(prod.get_price_statistic(mean))
-        self.medianprice_val.setText(prod.get_price_statistic(median))
-        self.numlistings_val.setText(str(len(prod.completed_listings)))
+    def set_price_statistics(self):
+        self.minprice_val.setText(self.prod.get_price_statistic(min))
+        self.maxprice_val.setText(self.prod.get_price_statistic(max))
+        self.meanprice_val.setText(self.prod.get_price_statistic(mean))
+        self.medianprice_val.setText(self.prod.get_price_statistic(median))
+        self.numlistings_val.setText(str(len(self.prod.completed_listings)))
 
     def clear_contents(self):
         self.search_field.setText('')
@@ -99,14 +118,23 @@ class App(QtWidgets.QWidget, Ui_Form):
         self.price_field.setText('')
         self.shipping_field.setText('')
         self.description_field.setPlainText('')
-        self.selectimg_combobox.setCurrentText('')
-        self.imgurl_field.setText('')
-        self.product_img.clear()
+        self.selectimg_combobox_1.setCurrentText('')
+        self.selectimg_combobox_2.setCurrentText('')
+        self.imgurl_field_1.setText('')
+        self.imgurl_field_2.setText('')
+        self.product_img_1.clear()
+        self.product_img_2.clear()
         self.price_dist_img.clear()
         self.minprice_val.setText('N/A')
         self.maxprice_val.setText('N/A')
         self.medianprice_val.setText('N/A')
+        self.meanprice_val.setText('N/A')
         self.numlistings_val.setText('N/A')
+        self.selectimg_combobox_1.clear()
+        self.selectimg_combobox_2.clear()
+        self.title_combobox.clear()
+        self.catname_combobox.clear()
+        self.catid_combobox.clear()
 
 
 if __name__ == '__main__':
