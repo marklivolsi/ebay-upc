@@ -6,6 +6,10 @@ import aiohttp
 import aiofiles
 import matplotlib
 import matplotlib.pyplot as plt
+import re
+from PIL import Image
+from PIL.ImageQt import ImageQt
+from io import BytesIO
 
 
 def find_parameters(upc):
@@ -74,8 +78,16 @@ def generate_histogram(arr, file_path):
     plt.ylabel('Frequency')
     plt.savefig(file_path, bbox_inches='tight')
 
+def strip_html_tags(html_str):
+    print('html str is type:', type(html_str))
+    return str(re.sub('<[^<]+?>', '', html_str))
 
-# Rewriting async functions
+
+def show_img_from_url(url):
+    response = requests.get(url)
+    img = Image.open(BytesIO(response.content))
+    qt_img = ImageQt(img)
+    return qt_img
 
 def build_request_url(request_type, api_base, params):
     req = requests.Request(request_type, api_base, params=params)
@@ -95,6 +107,8 @@ async def download_img(session, url, write_path):
         await file.close()
 
 
+
+
 async def async_batch_retrieve(loop, url_arr, func, **kwargs):
     async with aiohttp.ClientSession(loop=loop) as session:
         tasks = []
@@ -110,7 +124,6 @@ async def async_batch_retrieve(loop, url_arr, func, **kwargs):
             if len(tasks) == 1:
                 return tasks[0]
             return tasks
-
 
 def run_async_loop(func):
     try:

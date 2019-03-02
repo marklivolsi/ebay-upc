@@ -18,15 +18,6 @@ class Product:
         self.completed_listing_details = {}
         # self.img_list = []
 
-    # @property
-    # def img_url_list(self):
-    #     url_arr = []
-    #     if self.completed_listings:
-    #         for listing in self.completed_listings:
-    #             for url in listing.img_url_arr:
-    #                 url_arr.append(url)
-    #     return url_arr
-
     @property
     def price_array(self):
         """ Return array of float listing price values """
