@@ -1,6 +1,24 @@
 from helpers import *
 from config import config
-import collections
+
+
+class ItemListing:
+
+    def __init__(self, item_id, title, url, cat_id, cat_name, sell_state, price, ship_cost, currency):
+        self.item_id = item_id
+        self.title = title
+        self.description = ''
+        self.url = url
+        self.img_url_arr = []
+        self.cat_id = cat_id
+        self.cat_name = cat_name
+        self.sell_state = sell_state
+        self.price = price
+        self.ship_cost = ship_cost
+        self.currency = currency
+
+    def __repr__(self):
+        return self.title
 
 
 class Product:
@@ -36,12 +54,15 @@ class Product:
                         items.add(i)
                 else:
                     items.add(item)
-        return list(items)
+        if items:
+            return list(items)
+        else:
+            return None
 
     def get_price_statistic(self, func):
         """ Return string result of performing provided statistic function on price array """
         if self.price_array:
-            return '{:.2f}'.format(func(self.price_array))
+            return '${:.2f}'.format(func(self.price_array))
         else:
             return 'N/A'
 
@@ -103,11 +124,12 @@ class Product:
         """ Async fetch completed listing data and append to completed listing detail dict  """
         url_arr = self.build_url_arr()
         tasks = await async_batch_retrieve(loop, url_arr, fetch)
-        for task in tasks:
-            result = task.result()
-            data = format_json(result)
-            item_id = data['Item']['ItemID']
-            self.completed_listing_details[item_id] = data
+        if tasks:
+            for task in tasks:
+                result = task.result()
+                data = format_json(result)
+                item_id = data['Item']['ItemID']
+                self.completed_listing_details[item_id] = data
 
     def update_listing_details(self):
         """ Add description and image urls to ItemListing instances """
@@ -155,23 +177,3 @@ class Product:
     #         loop.run_until_complete(self.retrieve_completed_listing_details(loop))
     #     except client_exceptions.ClientConnectorError as e:
     #         print(e)
-
-
-
-class ItemListing:
-
-    def __init__(self, item_id, title, url, cat_id, cat_name, sell_state, price, ship_cost, currency):
-        self.item_id = item_id
-        self.title = title
-        self.description = ''
-        self.url = url
-        self.img_url_arr = []
-        self.cat_id = cat_id
-        self.cat_name = cat_name
-        self.sell_state = sell_state
-        self.price = price
-        self.ship_cost = ship_cost
-        self.currency = currency
-
-    def __repr__(self):
-        return self.title

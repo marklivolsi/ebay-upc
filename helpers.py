@@ -45,6 +45,7 @@ def format_json(text):
     data = json.loads(text)
     return data
 
+
 # def download_image(url, filename):
 #     try:
 #         file = open('images/{}.jpg'.format(filename), 'wb')
@@ -78,8 +79,8 @@ def generate_histogram(arr, file_path):
     plt.ylabel('Frequency')
     plt.savefig(file_path, bbox_inches='tight')
 
+
 def strip_html_tags(html_str):
-    print('html str is type:', type(html_str))
     return str(re.sub('<[^<]+?>', '', html_str))
 
 
@@ -88,6 +89,7 @@ def show_img_from_url(url):
     img = Image.open(BytesIO(response.content))
     qt_img = ImageQt(img)
     return qt_img
+
 
 def build_request_url(request_type, api_base, params):
     req = requests.Request(request_type, api_base, params=params)
@@ -107,8 +109,6 @@ async def download_img(session, url, write_path):
         await file.close()
 
 
-
-
 async def async_batch_retrieve(loop, url_arr, func, **kwargs):
     async with aiohttp.ClientSession(loop=loop) as session:
         tasks = []
@@ -125,10 +125,11 @@ async def async_batch_retrieve(loop, url_arr, func, **kwargs):
                 return tasks[0]
             return tasks
 
+
 def run_async_loop(func):
     try:
         loop = asyncio.get_event_loop()
         data = loop.run_until_complete(func(loop))
         return data
-    except aiohttp.client_exceptions.ClientConnectionError as error:
-        print(error)
+    except aiohttp.client_exceptions.ClientConnectionError as err:
+        print(err)

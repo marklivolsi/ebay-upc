@@ -11,6 +11,7 @@ class App(QtWidgets.QWidget, Ui_Form):
         super().__init__()
         self.setupUi(self)
         self.prod = Product()
+        self.loop_run = False
         self.desc_index = 0
         self.price_dist_img.setScaledContents(True)
         self.product_img_1.setScaledContents(False)
@@ -29,32 +30,39 @@ class App(QtWidgets.QWidget, Ui_Form):
         self.selectimg_combobox_2.activated.connect(self.set_img_combobox_2)
 
     def main_loop(self):
-        # prod = Product()
+        if self.loop_run:
+            self.clear_contents()
         self.prod.upc = self.upc_field.text()
-        self.prod.main_fetch_loop()
-        self.set_price_histogram()
-        # # prod.image_array_main_async_loop()
-        self.set_combo_box_options()
-        self.set_price_statistics()
-        self.populate_fields()
 
-    # def change_description(self, prod, direction):
-    #     if direction == 'next':
-    #         self.desc_index += 1
-    #     elif direction == 'prev':
-    #         self.desc_index -= 1
-    #     self.description_field.setPlainText(strip_html_tags(prod.get_property_list('description')[self.desc_index]))
+        if len(self.prod.upc) in (12, 13) and self.prod.upc.isdigit():
+            try:
+                self.prod.main_fetch_loop()
+                self.set_price_histogram()
+                self.set_combo_box_options()
+                self.set_price_statistics()
+                self.populate_fields()
+                self.loop_run = True
+            except TypeError:
+                return
 
     def set_description(self, ind):
-        self.description_field.setPlainText(strip_html_tags(self.prod.get_property_list('description')[ind]))
+        try:
+            self.description_field.setPlainText(strip_html_tags(self.prod.get_property_list('description')[ind]))
+        except TypeError as err:
+            print(err)
 
     def next_description(self):
-        self.desc_index += 1
-        self.set_description(self.desc_index)
+        if self.loop_run:
+            if self.desc_index == len(self.prod.get_property_list('description')) - 1:
+                self.desc_index = 0
+            else:
+                self.desc_index += 1
+            self.set_description(self.desc_index)
 
     def prev_description(self):
-        self.desc_index -= 1
-        self.set_description(self.desc_index)
+        if self.loop_run:
+            self.desc_index -= 1
+            self.set_description(self.desc_index)
 
     def set_title_field(self):
         self.title_field.setText(self.title_combobox.currentText())
@@ -83,12 +91,14 @@ class App(QtWidgets.QWidget, Ui_Form):
         self.set_title_field()
         self.set_catname_field()
         self.set_catid_field()
-        self.price_field.setText(self.prod.get_price_statistic(median))
         self.shipping_field.setText('0.00')
-        self.description_field.setPlainText(strip_html_tags(self.prod.get_property_list('description')[0]))
+        self.set_description(0)
         self.set_img_combobox_1()
         self.selectimg_combobox_2.setCurrentIndex(1)
         self.set_img_combobox_2()
+
+        if self.prod.get_price_statistic(median) is not 'N/A':
+            self.price_field.setText(self.prod.get_price_statistic(median))
 
     def set_price_histogram(self):
         file_path = self.prod.generate_price_histogram()
@@ -135,6 +145,9 @@ class App(QtWidgets.QWidget, Ui_Form):
         self.title_combobox.clear()
         self.catname_combobox.clear()
         self.catid_combobox.clear()
+
+        self.prod = Product()
+        self.loop_run = False
 
 
 if __name__ == '__main__':
