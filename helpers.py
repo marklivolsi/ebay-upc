@@ -1,15 +1,17 @@
-import requests
 import json
-from config import config
+from io import BytesIO
+
 import asyncio
 import aiohttp
 import aiofiles
+import requests
 import matplotlib
 import matplotlib.pyplot as plt
 from PIL import Image
 from PIL.ImageQt import ImageQt
-from io import BytesIO
 from bs4 import BeautifulSoup
+
+from config import config
 
 
 def find_parameters(upc):

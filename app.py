@@ -1,9 +1,11 @@
-from helpers import *
 import sys
+
 from PyQt5 import QtWidgets, QtGui, QtCore
+from numpy import mean, median
+
 from UI.main_window import Ui_Form
 from models import Product
-from numpy import mean, median
+from helpers import *
 
 
 class App(QtWidgets.QWidget, Ui_Form):
