@@ -42,8 +42,8 @@ def shop_parameters(item_id):
 
 def format_json(text):
     """ Formats text string as JSON (dictionary) """
-    data = json.loads(text)
-    return data
+    return json.loads(text)
+    # return data
 
 
 # def download_image(url, filename):
@@ -81,10 +81,12 @@ def generate_histogram(arr, file_path):
 
 
 def strip_html_tags(html_str):
-    return str(re.sub('<[^<]+?>', '', html_str))
+    string = re.sub('<[^<]+?>', '', html_str)
+    string = re.sub('{[^<]+?}', '', string)
+    return string
 
 
-def show_img_from_url(url):
+def qt_img_from_url(url):
     response = requests.get(url)
     img = Image.open(BytesIO(response.content))
     qt_img = ImageQt(img)

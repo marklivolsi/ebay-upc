@@ -84,7 +84,7 @@ class App(QtWidgets.QWidget, Ui_Form):
         self.set_product_image(url, self.product_img_2)
 
     def set_product_image(self, url, img_field):
-        pixmap = QtGui.QPixmap.fromImage(show_img_from_url(url))
+        pixmap = QtGui.QPixmap.fromImage(qt_img_from_url(url))
         img_field.setPixmap(pixmap.scaled(img_field.size(), QtCore.Qt.KeepAspectRatio))
 
     def populate_fields(self):
