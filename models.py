@@ -2,6 +2,8 @@ from helpers import *
 from config import config
 
 
+# TODO: Sort listings by ID number.
+
 class ItemListing:
 
     def __init__(self, item_id, title, url, cat_id, cat_name, sell_state, price, ship_cost, currency):

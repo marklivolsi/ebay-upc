@@ -6,10 +6,10 @@ import aiohttp
 import aiofiles
 import matplotlib
 import matplotlib.pyplot as plt
-import re
 from PIL import Image
 from PIL.ImageQt import ImageQt
 from io import BytesIO
+from bs4 import BeautifulSoup
 
 
 def find_parameters(upc):
@@ -81,9 +81,8 @@ def generate_histogram(arr, file_path):
 
 
 def strip_html_tags(html_str):
-    string = re.sub('<[^<]+?>', '', html_str)
-    string = re.sub('{[^<]+?}', '', string)
-    return string
+    soup = BeautifulSoup(html_str, 'html.parser')
+    return soup.get_text()
 
 
 def qt_img_from_url(url):
