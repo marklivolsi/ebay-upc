@@ -8,8 +8,8 @@ def get_app_id(path_to_yaml):
         try:
             yaml = load(stream)
             return yaml['api.ebay.com']['appid']
-        except YAMLError as exception:
-            print(exception)
+        except YAMLError as err:
+            print(err)
 
 
 config = {

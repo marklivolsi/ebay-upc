@@ -26,7 +26,6 @@ def find_parameters(upc):
         'categoryId': config['category_id'],
         'keywords': upc
         }
-    # return params
 
 
 def shop_parameters(item_id):
@@ -40,7 +39,6 @@ def shop_parameters(item_id):
         'ItemID': item_id,
         'IncludeSelector': config['IncludeSelector']
         }
-    # return params
 
 
 def format_json(text):
@@ -81,7 +79,7 @@ def generate_histogram(arr, file_path):
     plt.xlabel('Price ($ USD)')
     plt.ylabel('Frequency')
 
-    # Clear file
+    # Clear old file
     if os.path.isfile(file_path):
         os.remove(file_path)
 
@@ -96,8 +94,8 @@ def strip_html_tags(html_str):
 def qt_img_from_url(url):
     response = requests.get(url)
     img = Image.open(BytesIO(response.content))
-    qt_img = ImageQt(img)
-    return qt_img
+    return ImageQt(img)
+    # return qt_img
 
 
 def build_request_url(request_type, api_base, params):

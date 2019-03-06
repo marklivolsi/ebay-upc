@@ -10,6 +10,8 @@ from helpers import *
 
 class App(QtWidgets.QWidget, Ui_Form):
     def __init__(self):
+
+        # Initial setup
         super().__init__()
         self.setupUi(self)
         self.prod = UPCProduct()
@@ -19,7 +21,7 @@ class App(QtWidgets.QWidget, Ui_Form):
         self.product_img_1.setScaledContents(False)
         self.product_img_2.setScaledContents(False)
 
-        # TODO: Remove second image comboox.
+        # TODO: Remove second image combobox.
         # TODO: Add 'save image' btn which adds selected url to array.
         # TODO: Add btns to cycle through saved image array.
 
@@ -47,7 +49,6 @@ class App(QtWidgets.QWidget, Ui_Form):
         self.prod.upc = self.upc_field.text()
 
         try:
-            print(self.prod.upc)
             self.prod.main_fetch_loop()
             self.set_price_histogram()
             self.set_combo_box_options()
@@ -117,6 +118,8 @@ class App(QtWidgets.QWidget, Ui_Form):
         self.meanprice_val.setText(self.prod.get_price_statistic(mean))
         self.medianprice_val.setText(self.prod.get_price_statistic(median))
         self.numlistings_val.setText(str(len(self.prod.completed_listings)))
+
+    # Methods for setting/resetting fields
 
     def populate_fields(self):
         self.set_title_field()

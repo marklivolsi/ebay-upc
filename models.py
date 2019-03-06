@@ -2,8 +2,6 @@ from helpers import *
 from config import config
 
 
-# TODO: Sort listings by ID number.
-
 class ItemListing:
 
     def __init__(self, item_id, title, url, cat_id, cat_name, sell_state, price, ship_cost, currency):
@@ -47,6 +45,7 @@ class UPCProduct:
             return None
 
     def get_property_list(self, prop):
+        """ Return array of given property for completed listings. Flattens if property is a list (i.e. img urls) """
         items = set()
         if self.completed_listings:
             for listing in self.completed_listings:
