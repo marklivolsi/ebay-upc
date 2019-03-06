@@ -1,3 +1,5 @@
+from collections import Iterable
+
 from helpers import *
 from config import config
 
@@ -34,7 +36,7 @@ class UPCProduct:
         self.img = ''
         self.completed_listings = []
         self.completed_listing_details = {}
-        # self.img_list = []
+        self.img_list = []
 
     @property
     def price_array(self):
@@ -50,7 +52,8 @@ class UPCProduct:
         if self.completed_listings:
             for listing in self.completed_listings:
                 item = getattr(listing, prop)
-                if type(item) == list:
+                # if type(item) == list:
+                if isinstance(item, Iterable) and not isinstance(item, str):
                     for i in item:
                         items.add(i)
                 else:

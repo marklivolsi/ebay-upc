@@ -17,9 +17,11 @@ class App(QtWidgets.QWidget, Ui_Form):
         self.prod = UPCProduct()
         self.loop_run = False
         self.desc_index = 0
+        self.ebay_img_index = 0
+        self.saved_img_index = 0
         self.price_dist_img.setScaledContents(True)
-        self.product_img_1.setScaledContents(False)
-        self.product_img_2.setScaledContents(False)
+        self.ebay_img.setScaledContents(False)
+        self.saved_img.setScaledContents(False)
 
         # TODO: Remove second image combobox.
         # TODO: Add 'save image' btn which adds selected url to array.
@@ -30,13 +32,17 @@ class App(QtWidgets.QWidget, Ui_Form):
         self.fetchlistings_btn.clicked.connect(self.main_loop)
         self.next_desc_btn.clicked.connect(self.next_description)
         self.prev_desc_btn.clicked.connect(self.prev_description)
+        self.next_ebay_img_btn.clicked.connect(self.next_ebay_img)
+        self.prev_ebay_img_btn.clicked.connect(self.prev_ebay_img)
+        self.next_saved_img_btn.clicked.connect(self.next_saved_img)
+        self.prev_saved_img_btn.clicked.connect(self.prev_saved_img)
+        self.save_img_btn.clicked.connect(self.save_img)
+        self.delete_img_btn.clicked.connect(self.delete_img)
 
         # Combobox connections
         self.title_combobox.activated.connect(self.set_title_field)
         self.catname_combobox.activated.connect(self.set_catname_field)
         self.catid_combobox.activated.connect(self.set_catid_field)
-        self.selectimg_combobox_1.activated.connect(self.set_img_combobox_1)
-        self.selectimg_combobox_2.activated.connect(self.set_img_combobox_2)
 
     def main_loop(self):
         if not len(self.upc_field.text()) in (12, 13) or not self.upc_field.text().isdigit():
@@ -86,19 +92,59 @@ class App(QtWidgets.QWidget, Ui_Form):
     def set_catid_field(self):
         self.catid_field.setText(self.catid_combobox.currentText())
 
-    def set_img_combobox_1(self):
-        url = self.selectimg_combobox_1.currentText()
-        self.imgurl_field_1.setText(url)
-        self.set_product_image(url, self.product_img_1)
-
-    def set_img_combobox_2(self):
-        url = self.selectimg_combobox_2.currentText()
-        self.imgurl_field_2.setText(url)
-        self.set_product_image(url, self.product_img_2)
-
-    def set_product_image(self, url, img_field):
-        pixmap = QtGui.QPixmap.fromImage(qt_img_from_url(url))
+    def set_img(self, img_url, img_field):
+        pixmap = QtGui.QPixmap.fromImage(qt_img_from_url(img_url))
         img_field.setPixmap(pixmap.scaled(img_field.size(), QtCore.Qt.KeepAspectRatio))
+
+    def next_ebay_img(self):
+        if self.loop_run:
+            if self.ebay_img_index == len(self.prod.get_property_list('img_url_arr')) - 1:
+                self.ebay_img_index = 0
+            else:
+                self.ebay_img_index += 1
+            img_url = self.prod.get_property_list('img_url_arr')[self.ebay_img_index]
+            self.set_img(img_url, self.ebay_img)
+
+    def prev_ebay_img(self):
+        if self.loop_run:
+            if self.ebay_img_index == 0:
+                self.ebay_img_index = len(self.prod.get_property_list('img_url_arr')) - 1
+            else:
+                self.ebay_img_index -= 1
+            img_url = self.prod.get_property_list('img_url_arr')[self.ebay_img_index]
+            self.set_img(img_url, self.ebay_img)
+
+    def next_saved_img(self):
+        if self.loop_run and self.prod.img_list:
+            if self.saved_img_index == len(self.prod.img_list) - 1:
+                self.saved_img_index = 0
+            else:
+                self.saved_img_index += 1
+            img_url = self.prod.img_list[self.saved_img_index]
+            self.set_img(img_url, self.saved_img)
+
+    def prev_saved_img(self):
+        if self.loop_run and self.prod.img_list:
+            if self.saved_img_index == 0:
+                self.saved_img_index = len(self.prod.img_list) - 1
+            else:
+                self.saved_img_index -= 1
+            img_url = self.prod.img_list[self.saved_img_index]
+            self.set_img(img_url, self.saved_img)
+
+    def save_img(self):
+        self.prod.img_list.append(self.prod.get_property_list('img_url_arr')[self.ebay_img_index])
+        img_url = self.prod.img_list[-1]
+        self.saved_img_index = len(self.prod.img_list) - 1
+        self.set_img(img_url, self.saved_img)
+
+    def delete_img(self):
+        if self.prod.img_list:
+            del self.prod.img_list[self.saved_img_index]
+            if len(self.prod.img_list) == 0:
+                self.saved_img.clear()
+            else:
+                self.prev_saved_img()
 
     def set_price_histogram(self):
         file_path = self.prod.generate_price_histogram()
@@ -106,8 +152,6 @@ class App(QtWidgets.QWidget, Ui_Form):
         self.price_dist_img.setPixmap(pixmap.scaled(self.price_dist_img.size(), QtCore.Qt.KeepAspectRatio))
 
     def set_combo_box_options(self):
-        self.selectimg_combobox_1.addItems(self.prod.get_property_list('img_url_arr'))
-        self.selectimg_combobox_2.addItems(self.prod.get_property_list('img_url_arr'))
         self.title_combobox.addItems(self.prod.get_property_list('title'))
         self.catname_combobox.addItems(self.prod.get_property_list('cat_name'))
         self.catid_combobox.addItems(self.prod.get_property_list('cat_id'))
@@ -127,27 +171,18 @@ class App(QtWidgets.QWidget, Ui_Form):
         self.set_catid_field()
         self.shipping_field.setText('0.00')
         self.set_description(0)
-        self.set_img_combobox_1()
-        self.selectimg_combobox_2.setCurrentIndex(1)
-        self.set_img_combobox_2()
+        self.set_img(self.prod.get_property_list('img_url_arr')[0], self.ebay_img)
         if self.prod.get_price_statistic(median) is not 'N/A':
             self.price_field.setText(self.prod.get_price_statistic(median))
 
     def clear_contents(self):
         self.search_field.setText('')
-        # self.upc_field.setText('')
         self.title_field.setText('')
         self.catname_field.setText('')
         self.catid_field.setText('')
         self.price_field.setText('')
         self.shipping_field.setText('')
         self.description_field.setPlainText('')
-        self.selectimg_combobox_1.setCurrentText('')
-        self.selectimg_combobox_2.setCurrentText('')
-        self.imgurl_field_1.setText('')
-        self.imgurl_field_2.setText('')
-        self.product_img_1.clear()
-        self.product_img_2.clear()
         self.price_dist_img.clear()
         self.minprice_val.setText('N/A')
         self.maxprice_val.setText('N/A')
@@ -160,8 +195,8 @@ class App(QtWidgets.QWidget, Ui_Form):
         self.catname_combobox.clear()
         self.catid_combobox.clear()
 
-        # self.prod = UPCProduct()
-        # self.loop_run = False
+        self.ebay_img.clear()
+        self.saved_img.clear()
 
     def clear(self):
         self.clear_contents()

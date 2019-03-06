@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1392</width>
-    <height>966</height>
+    <height>996</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,15 +16,28 @@
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="1" column="0">
     <layout class="QGridLayout" name="gridLayout">
-     <item row="11" column="1">
-      <widget class="QLabel" name="selectimg_label_2">
-       <property name="text">
-        <string>Select image 2:</string>
+     <item row="9" column="2">
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
        </property>
-      </widget>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
      </item>
      <item row="3" column="2">
       <widget class="QLineEdit" name="catname_field"/>
+     </item>
+     <item row="13" column="3">
+      <widget class="QPushButton" name="next_saved_img_btn">
+       <property name="text">
+        <string>Next Image &gt;&gt;</string>
+       </property>
+      </widget>
      </item>
      <item row="8" column="2">
       <widget class="QPushButton" name="prev_desc_btn">
@@ -46,20 +59,7 @@
        </property>
       </widget>
      </item>
-     <item row="13" column="1">
-      <widget class="QPushButton" name="search_btn">
-       <property name="minimumSize">
-        <size>
-         <width>0</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>Search</string>
-       </property>
-      </widget>
-     </item>
-     <item row="11" column="4" colspan="2" alignment="Qt::AlignHCenter">
+     <item row="13" column="4" colspan="2" alignment="Qt::AlignHCenter">
       <widget class="QLabel" name="pricedistribution_label">
        <property name="minimumSize">
         <size>
@@ -85,9 +85,6 @@
      <item row="4" column="3">
       <widget class="QComboBox" name="catid_combobox"/>
      </item>
-     <item row="9" column="3">
-      <widget class="QComboBox" name="selectimg_combobox_1"/>
-     </item>
      <item row="8" column="3">
       <widget class="QPushButton" name="next_desc_btn">
        <property name="text">
@@ -98,9 +95,6 @@
      <item row="2" column="3">
       <widget class="QComboBox" name="title_combobox"/>
      </item>
-     <item row="11" column="2">
-      <widget class="QLineEdit" name="imgurl_field_2"/>
-     </item>
      <item row="5" column="2">
       <widget class="QLineEdit" name="price_field"/>
      </item>
@@ -108,10 +102,25 @@
       <widget class="QLineEdit" name="shipping_field"/>
      </item>
      <item row="11" column="3">
-      <widget class="QComboBox" name="selectimg_combobox_2"/>
+      <widget class="QPushButton" name="prev_saved_img_btn">
+       <property name="text">
+        <string>&lt;&lt; Prev Image</string>
+       </property>
+      </widget>
      </item>
-     <item row="9" column="2">
-      <widget class="QLineEdit" name="imgurl_field_1"/>
+     <item row="11" column="2">
+      <widget class="QPushButton" name="prev_ebay_img_btn">
+       <property name="text">
+        <string>&lt;&lt; Prev Image</string>
+       </property>
+      </widget>
+     </item>
+     <item row="13" column="2">
+      <widget class="QPushButton" name="next_ebay_img_btn">
+       <property name="text">
+        <string>Next Image &gt;&gt;</string>
+       </property>
+      </widget>
      </item>
      <item row="7" column="2" colspan="2">
       <widget class="QPlainTextEdit" name="description_field">
@@ -123,8 +132,8 @@
        </property>
       </widget>
      </item>
-     <item row="12" column="2">
-      <widget class="QLabel" name="product_img_1">
+     <item row="14" column="2">
+      <widget class="QLabel" name="ebay_img">
        <property name="minimumSize">
         <size>
          <width>280</width>
@@ -133,6 +142,13 @@
        </property>
        <property name="text">
         <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="10" column="3" alignment="Qt::AlignHCenter">
+      <widget class="QLabel" name="saved_img_label">
+       <property name="text">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Saved Images&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
       </widget>
      </item>
@@ -179,14 +195,7 @@
        </property>
       </widget>
      </item>
-     <item row="9" column="1">
-      <widget class="QLabel" name="selectimg_label_1">
-       <property name="text">
-        <string>Select image 1:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="12" column="4" colspan="2" alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+     <item row="14" column="4" colspan="2" alignment="Qt::AlignHCenter|Qt::AlignVCenter">
       <widget class="QLabel" name="price_dist_img">
        <property name="minimumSize">
         <size>
@@ -206,8 +215,8 @@
        </property>
       </widget>
      </item>
-     <item row="12" column="3">
-      <widget class="QLabel" name="product_img_2">
+     <item row="14" column="3">
+      <widget class="QLabel" name="saved_img">
        <property name="minimumSize">
         <size>
          <width>321</width>
@@ -222,14 +231,21 @@
      <item row="2" column="2">
       <widget class="QLineEdit" name="title_field"/>
      </item>
-     <item row="13" column="4">
+     <item row="10" column="2" alignment="Qt::AlignHCenter">
+      <widget class="QLabel" name="ebay_img_label">
+       <property name="text">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;eBay Images&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+      </widget>
+     </item>
+     <item row="15" column="4">
       <widget class="QPushButton" name="save_btn">
        <property name="text">
         <string>Save</string>
        </property>
       </widget>
      </item>
-     <item row="13" column="5">
+     <item row="15" column="5">
       <widget class="QPushButton" name="clear_btn">
        <property name="text">
         <string>Clear</string>
@@ -345,8 +361,35 @@
      <item row="4" column="2">
       <widget class="QLineEdit" name="catid_field"/>
      </item>
-     <item row="13" column="2">
+     <item row="0" column="5">
+      <widget class="QPushButton" name="search_btn">
+       <property name="minimumSize">
+        <size>
+         <width>298</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Search</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="4">
       <widget class="QLineEdit" name="search_field"/>
+     </item>
+     <item row="15" column="2">
+      <widget class="QPushButton" name="save_img_btn">
+       <property name="text">
+        <string>Save Image</string>
+       </property>
+      </widget>
+     </item>
+     <item row="15" column="3">
+      <widget class="QPushButton" name="delete_img_btn">
+       <property name="text">
+        <string>Delete Image</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
