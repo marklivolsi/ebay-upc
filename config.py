@@ -28,7 +28,3 @@ config = {
         'image_path': 'images',
         'chart_path': 'charts'
      }
-
-field_map = {
-
-}
