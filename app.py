@@ -32,12 +32,14 @@ class App(QtWidgets.QWidget, Ui_Form):
         self.selectimg_combobox_2.activated.connect(self.set_img_combobox_2)
 
     def main_loop(self):
+
+        if len(self.upc_field.text()) not in (12, 13) and not self.upc_field.text().isdigit():
+            QtWidgets.QMessageBox.about(self, '', 'Invalid UPC provided. Please enter a valid UPC number.')
+            return
+
         if self.loop_run:
             self.clear_contents()
         self.prod.upc = self.upc_field.text()
-
-        if len(self.prod.upc) not in (12, 13) and not self.prod.upc.isdigit():
-            QtWidgets.QMessageBox.about(self, 'Invalid UPC', 'Invalid UPC provided. Please enter a valid UPC number.')
 
         try:
             self.prod.main_fetch_loop()
