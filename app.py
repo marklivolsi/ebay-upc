@@ -93,7 +93,8 @@ class App(QtWidgets.QWidget, Ui_Form):
 
     # Methods for setting image fields
 
-    def set_img(self, img_url, img_field):
+    @staticmethod
+    def set_img(img_url, img_field):
         pixmap = QtGui.QPixmap.fromImage(qt_img_from_url(img_url))
         img_field.setPixmap(pixmap.scaled(img_field.size(), QtCore.Qt.KeepAspectRatio))
 
@@ -192,8 +193,6 @@ class App(QtWidgets.QWidget, Ui_Form):
         self.medianprice_val.setText('N/A')
         self.meanprice_val.setText('N/A')
         self.numlistings_val.setText('N/A')
-        self.selectimg_combobox_1.clear()
-        self.selectimg_combobox_2.clear()
         self.title_combobox.clear()
         self.catname_combobox.clear()
         self.catid_combobox.clear()

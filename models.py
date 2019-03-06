@@ -23,6 +23,9 @@ class ItemListing:
         return self.title
 
 
+# TODO: Add sqlite3 functionality to save listings to DB.
+# TODO: Add download img functionality
+
 class UPCProduct:
 
     def __init__(self):
