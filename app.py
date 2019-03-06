@@ -23,10 +23,6 @@ class App(QtWidgets.QWidget, Ui_Form):
         self.ebay_img.setScaledContents(False)
         self.saved_img.setScaledContents(False)
 
-        # TODO: Remove second image combobox.
-        # TODO: Add 'save image' btn which adds selected url to array.
-        # TODO: Add btns to cycle through saved image array.
-
         # Button connections
         self.clear_btn.clicked.connect(self.clear)
         self.fetchlistings_btn.clicked.connect(self.main_loop)
@@ -45,6 +41,7 @@ class App(QtWidgets.QWidget, Ui_Form):
         self.catid_combobox.activated.connect(self.set_catid_field)
 
     def main_loop(self):
+        """ Main loop. Fetches data and sets fields when provided a valid UPC """
         if not len(self.upc_field.text()) in (12, 13) or not self.upc_field.text().isdigit():
             QtWidgets.QMessageBox.about(self, '', 'Invalid UPC provided. Please enter a valid UPC number.')
             return
@@ -63,6 +60,8 @@ class App(QtWidgets.QWidget, Ui_Form):
             self.loop_run = True
         except TypeError as err:
             print(err)
+
+    # Methods for setting text fields
 
     def set_description(self, ind):
         try:
@@ -91,6 +90,8 @@ class App(QtWidgets.QWidget, Ui_Form):
 
     def set_catid_field(self):
         self.catid_field.setText(self.catid_combobox.currentText())
+
+    # Methods for setting image fields
 
     def set_img(self, img_url, img_field):
         pixmap = QtGui.QPixmap.fromImage(qt_img_from_url(img_url))
@@ -146,6 +147,8 @@ class App(QtWidgets.QWidget, Ui_Form):
             else:
                 self.prev_saved_img()
 
+    # Methods for setting price histogram and statistics
+
     def set_price_histogram(self):
         file_path = self.prod.generate_price_histogram()
         pixmap = QtGui.QPixmap(file_path)
@@ -163,7 +166,7 @@ class App(QtWidgets.QWidget, Ui_Form):
         self.medianprice_val.setText(self.prod.get_price_statistic(median))
         self.numlistings_val.setText(str(len(self.prod.completed_listings)))
 
-    # Methods for setting/resetting fields
+    # Methods for setting/resetting bulk fields
 
     def populate_fields(self):
         self.set_title_field()
