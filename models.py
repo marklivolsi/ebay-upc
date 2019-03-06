@@ -23,7 +23,7 @@ class ItemListing:
         return self.title
 
 
-class Product:
+class UPCProduct:
 
     def __init__(self):
         self.upc = ''

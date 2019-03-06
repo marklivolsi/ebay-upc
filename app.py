@@ -4,7 +4,7 @@ from PyQt5 import QtWidgets, QtGui, QtCore
 from numpy import mean, median
 
 from UI.main_window import Ui_Form
-from models import Product
+from models import UPCProduct
 from helpers import *
 
 
@@ -12,7 +12,7 @@ class App(QtWidgets.QWidget, Ui_Form):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
-        self.prod = Product()
+        self.prod = UPCProduct()
         self.loop_run = False
         self.desc_index = 0
         self.price_dist_img.setScaledContents(True)
@@ -148,7 +148,7 @@ class App(QtWidgets.QWidget, Ui_Form):
         self.catname_combobox.clear()
         self.catid_combobox.clear()
 
-        self.prod = Product()
+        self.prod = UPCProduct()
         self.loop_run = False
 
 
