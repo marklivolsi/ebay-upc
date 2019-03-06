@@ -81,6 +81,7 @@ class UPCProduct:
         """ Main loop. Call this to collect all completed listing data for a given UPC """
         data = run_async_loop(self.fetch_completed_listings)
         self.parse_listings(data)
+        self.completed_listings.sort(key=lambda x: x.item_id)
         run_async_loop(self.fetch_listing_details)
         self.update_listing_details()
 
@@ -142,6 +143,7 @@ class UPCProduct:
 
             listing.description = description
             listing.img_url_arr = img_url_arr
+
 
 
     # async def download_img_list(self, loop):

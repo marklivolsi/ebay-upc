@@ -1,3 +1,4 @@
+import os
 import json
 from io import BytesIO
 
@@ -16,7 +17,7 @@ from config import config
 
 def find_parameters(upc):
     """ Returns dictionary of parameters for use in building eBay finding service API GET request """
-    params = {
+    return {
         'OPERATION-NAME': config['find_operation_name'],
         'SERVICE-VERSION': config['service_version'],
         'SECURITY-APPNAME': config['app_id'],
@@ -25,12 +26,12 @@ def find_parameters(upc):
         'categoryId': config['category_id'],
         'keywords': upc
         }
-    return params
+    # return params
 
 
 def shop_parameters(item_id):
     """ Returns dictionary of parameters for use in building eBay shopping API GET request """
-    params = {
+    return {
         'callname': config['shop_operation_name'],
         'version': config['shopping_api_version'],
         'appid': config['app_id'],
@@ -39,13 +40,12 @@ def shop_parameters(item_id):
         'ItemID': item_id,
         'IncludeSelector': config['IncludeSelector']
         }
-    return params
+    # return params
 
 
 def format_json(text):
     """ Formats text string as JSON (dictionary) """
     return json.loads(text)
-    # return data
 
 
 # def download_image(url, filename):
@@ -67,6 +67,7 @@ async def download_image(url, file_path, session):
 
 def generate_histogram(arr, file_path):
     matplotlib.use('AGG', force=True)
+    plt.clf()
     plt.ioff()
 
     # Set colors based on bin height
@@ -79,6 +80,11 @@ def generate_histogram(arr, file_path):
 
     plt.xlabel('Price ($ USD)')
     plt.ylabel('Frequency')
+
+    # Clear file
+    if os.path.isfile(file_path):
+        os.remove(file_path)
+
     plt.savefig(file_path, bbox_inches='tight')
 
 
