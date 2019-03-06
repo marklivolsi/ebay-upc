@@ -1,4 +1,4 @@
-from yaml import load, YAMLError
+from yaml import safe_load, YAMLError
 
 YAML_PATH = 'ebay.yaml'
 
@@ -6,7 +6,7 @@ YAML_PATH = 'ebay.yaml'
 def get_app_id(path_to_yaml):
     with open(path_to_yaml, 'r') as stream:
         try:
-            yaml = load(stream)
+            yaml = safe_load(stream)
             return yaml['api.ebay.com']['appid']
         except YAMLError as err:
             print(err)
