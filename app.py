@@ -36,16 +36,18 @@ class App(QtWidgets.QWidget, Ui_Form):
             self.clear_contents()
         self.prod.upc = self.upc_field.text()
 
-        if len(self.prod.upc) in (12, 13) and self.prod.upc.isdigit():
-            try:
-                self.prod.main_fetch_loop()
-                self.set_price_histogram()
-                self.set_combo_box_options()
-                self.set_price_statistics()
-                self.populate_fields()
-                self.loop_run = True
-            except TypeError:
-                return
+        if len(self.prod.upc) not in (12, 13) and not self.prod.upc.isdigit():
+            QtWidgets.QMessageBox.about(self, 'Invalid UPC', 'Invalid UPC provided. Please enter a valid UPC number.')
+
+        try:
+            self.prod.main_fetch_loop()
+            self.set_price_histogram()
+            self.set_combo_box_options()
+            self.set_price_statistics()
+            self.populate_fields()
+            self.loop_run = True
+        except TypeError:
+            return
 
     def set_description(self, ind):
         try:
