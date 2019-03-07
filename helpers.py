@@ -95,7 +95,6 @@ def qt_img_from_url(url):
     response = requests.get(url)
     img = Image.open(BytesIO(response.content))
     return ImageQt(img)
-    # return qt_img
 
 
 def build_request_url(request_type, api_base, params):
